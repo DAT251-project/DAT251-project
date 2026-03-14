@@ -12,6 +12,11 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-custom-red: #7A3018;
+   --color-custom-eggwhite: #F4F3EE;
+   --color-custom-eggwhite-dark: #E7E6DE;
+   --color-custom-gold: #C9AB81;
+   --color-custom-gray: #585857;
+   --color-custom-green: #63A439;
 }
 
 @media (prefers-color-scheme: dark) {
