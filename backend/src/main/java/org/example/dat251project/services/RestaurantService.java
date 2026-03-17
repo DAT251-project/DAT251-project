@@ -29,8 +29,14 @@ public class RestaurantService {
         return null;
     }
 
+    /**
+     * Generate a list of timeslots between the opening hour and the closing hour, given a minute interval
+     *
+     * @param opHours
+     * @param minuteInterval
+     * @return
+     */
     private List<LocalTime> generateTimeSlots(OpeningHours opHours, Integer minuteInterval) {
-        // Add timeslot for every 30 minutes
         List<LocalTime> timeSlots = new ArrayList<>();
         LocalTime current = opHours.getOpen();
         while (!current.isAfter(opHours.getClose())) {
@@ -40,6 +46,14 @@ public class RestaurantService {
         return timeSlots;
     }
 
+    /**
+     * Generate a map of days that are open, with their {@link OpeningHours openingHours}
+     * also avoids including days that are closed
+     *
+     * @param normalOpeningHours
+     * @param closedDays
+     * @return
+     */
     private Map<DayOfWeek, OpeningHours> generateOpeningDays(OpeningHours normalOpeningHours, Set<DayOfWeek> closedDays) {
         Map<DayOfWeek, OpeningHours> openingDays = new HashMap<>();
         for (DayOfWeek day : DayOfWeek.values()) {

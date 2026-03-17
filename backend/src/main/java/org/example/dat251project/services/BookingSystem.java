@@ -39,6 +39,13 @@ public class BookingSystem {
         }
     }
 
+    /**
+     * helper method for checking if the timeslots given are within the {@link OpeningHours openingHours}
+     *
+     * @param timeSlots
+     * @param openingHours
+     * @return true if all the timeslots are within opening and closing hours
+     */
     private boolean timeSlotsWithinOpeningHours(List<LocalTime> timeSlots, OpeningHours openingHours) {
         for (LocalTime time : timeSlots) {
             if (!openingHours.withinOpeningHours(time)) {
@@ -48,6 +55,15 @@ public class BookingSystem {
         return true;
     }
 
+    /**
+     * Get the number of available seatings on that specific {@link LocalDate date} and {@link LocalTime time}
+     * and check whether it is available to handle a booking of {@link Integer numGuests}
+     *
+     * @param date
+     * @param time
+     * @param numGuests
+     * @return true if there is enough capacity, false otherwise
+     */
     private boolean checkAvailability(LocalDate date, LocalTime time, int numGuests) {
         Integer totalGuests = bookingRepo.sumGuestsByDateAndTime(date, time);
         if (totalGuests == null) totalGuests = 0;
@@ -66,6 +82,7 @@ public class BookingSystem {
     //algorithm part
     public boolean createBooking(LocalDate date, LocalTime time, int numGuests) {
         // TODO complex algorithm must be in place
+        // BookingDTO? instead of three parameters? can be used as refactor step
         return checkAvailability(date, time, numGuests);
     }
 }

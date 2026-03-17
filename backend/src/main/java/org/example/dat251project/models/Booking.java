@@ -24,12 +24,15 @@ public class Booking {
     @NotNull
     @Email
     private String email;
+    @NotNull
+    private Integer phoneNumber;
     private int numberGuest;
     private LocalTime time;
     private Date date;
 
-    public Booking(String email, int numberGuest, LocalTime time, Date date) {
+    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, Date date) {
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.numberGuest = numberGuest;
         this.time = time;
         this.date = date;

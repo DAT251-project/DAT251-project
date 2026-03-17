@@ -63,7 +63,7 @@ public class TestBookingSystem {
         restaurant.setTimeSlots(timeSlots);
         BookingSystem bookingSystem = new BookingSystem(bookingRepo, restaurant);
 
-
+        // If refactor to using DTO, remember to change it here as well
         LocalDate date = LocalDate.of(2026, 3, 10);
         LocalTime time = LocalTime.of(18, 0);
         int numGuests = 2;

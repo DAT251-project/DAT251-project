@@ -1,9 +1,5 @@
 package org.example.dat251project.configs;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.HashSet;
-
 import org.example.dat251project.models.Restaurant;
 import org.example.dat251project.repositories.BookingRepository;
 import org.example.dat251project.repositories.RestaurantRepository;
@@ -17,6 +13,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.HashSet;
 
 @Configuration
 public class DataInitializer {
@@ -52,7 +52,7 @@ public class DataInitializer {
             }
         };
     }
-    
+
     @Bean
     @Lazy
     public BookingSystem bookingSystem() {
