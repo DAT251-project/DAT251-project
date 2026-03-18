@@ -19,13 +19,6 @@
    --color-custom-green: #63A439;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 @layer base {
   body {
     background: var(--background);
@@ -36,5 +29,33 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-title), sans-serif;
   }
+}
+
+@layer utilities{
+    .font-title {
+        font-family: var(--font-title), sans-serif;
+    }
+    .default-btn {
+        @apply py-3 px-5 border-2 rounded-3xl transition-all duration-300;
+    }
+}
+
+.btn{
+    position: relative;
+}
+
+.btn::before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: all 0.4s;
+}
+
+.btn:hover::before{
+    width: 100%;
 }
 
