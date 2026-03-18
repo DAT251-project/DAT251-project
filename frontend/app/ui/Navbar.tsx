@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import Container from "@/app/ui/Container";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import clsx from "clsx";
 
 export default function Navbar(){
@@ -25,7 +25,7 @@ export default function Navbar(){
             <ul className={clsx(
                 "absolute top-full w-full right-0 z-1",
                 "flex flex-col items-end gap-8 uppercase font-title pt-5 pb-10 bg-background",
-                "transition-all duration-200 ease-in-out",
+                "transition-all md:transition-none duration-200 ease-in-out",
                 "md:static md:flex-row md:w-auto md:gap-10 md:p-0 md:translate-0",
                 isOpen ? "translate-x-0 pr-5" : "-translate-x-full",
             )}>

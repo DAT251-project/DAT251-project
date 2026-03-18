@@ -20,9 +20,9 @@ export default function RootLayout({
         className={`antialiased min-h-[100dvh] grid grid-rows-[auto_1fr_auto]`}
       >
       <Navbar/>
-          {/*<main>*/}
-          {/*  {children}*/}
-          {/*</main>*/}
+          <main>
+            {children}
+          </main>
         <footer className={"bg-custom-red text-white"}>
             <Container style={"flex justify-between px-30 py-8"}>
                 <section>
