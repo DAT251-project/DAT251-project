@@ -31,3 +31,29 @@
   }
 }
 
+@layer utilities{
+    .font-title {
+        font-family: var(--font-title), sans-serif;
+    }
+}
+
+.btn{
+    position: relative;
+}
+
+.btn::before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: all 0.4s;
+}
+
+.btn:hover::before{
+    width: 100%;
+}
+
+

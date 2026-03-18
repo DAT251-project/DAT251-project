@@ -19,16 +19,18 @@ export default function RootLayout({
       <body
         className={`antialiased min-h-[100dvh] grid grid-rows-[auto_1fr_auto]`}
       >
-          <nav className={"flex justify-between items-center mx-6"}>
+      <section className={"max-w-372 w-full mx-auto px-10"}>
+          <nav className={"flex justify-between items-center border-b-2 border-white"}>
               <Link href={"/"}>
-                <Image src={"/logo.PNG"} alt={"Logo of the restaurant"} width={100} height={100}/>
+                  <Image src={"/logo.png"} alt={"Logo of the restaurant"} width={200} height={200}/>
               </Link>
-              <ul className={"flex gap-3"}>
-                  <li><Link href="/menu" className={"text-white hover:text-black"}>Menu</Link></li>
-                  <li><Link href="/contact" className={"p-2 text-white px-3 hover:text-black"}>Contact</Link></li>
-                  <li><Link href="/booking" className={"p-2 text-white rounded-md px-3 border-2 border-white hover:bg-custom-red hover:border-2 hover:border-black"}>Book now</Link></li>
+              <ul className={"flex gap-10 uppercase font-title"}>
+                  <li><Link href="/menu" className={"btn py-2 text-white"}>Meny</Link></li>
+                  <li><Link href="/contact" className={"btn py-2 text-white"}>Kontakt oss</Link></li>
+                  <li><Link href="/booking" className={"py-3 px-5 text-white border-2 border-white rounded-3xl hover:bg-custom-eggwhite  hover:border-2 hover:border-custom-eggwhite hover:text-black transition-colors duration-300"}>Reserver bord</Link></li>
               </ul>
           </nav>
+      </section>
           <div>
             {children}
           </div>

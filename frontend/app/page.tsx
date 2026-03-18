@@ -10,10 +10,10 @@ export default function Home() {
                     <h1 className={"text-white text-6xl font-bold"}>Sze Chuan House</h1>
                     <p className={"text-white text-xl"}>Nedre Korskirkeallmenningen 9, 5017 Bergen</p>
                     <div className={"flex gap-2"}>
+                        <Link href="/menu"
+                              className={"p-2 px-3 text-white border-2 border-white hover:bg-custom-red hover:border-2 hover:border-black"}>Menu</Link>
                         <Link href="/booking"
-                              className={"p-2 text-white rounded-md px-3 border-2 border-white hover:bg-custom-red hover:border-2 hover:border-black"}>Menu</Link>
-                        <Link href="/booking"
-                              className={"p-2 text-white rounded-md px-3 border-2 border-white hover:bg-custom-red hover:border-2 hover:border-black"}>Book
+                              className={"p-2 px-3 text-white rounded-md border-2 border-white hover:bg-custom-red hover:border-2 hover:border-black"}>Book
                             now</Link>
                     </div>
                 </section>
