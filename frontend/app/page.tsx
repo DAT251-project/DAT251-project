@@ -10,9 +10,9 @@ export default function Home() {
                 <section className={"flex flex-col items-center md:items-start w-full my-20 md:my-10 gap-5"}>
                     <h1 className={"text-white text-3xl font-bold"}>Velkommen til Sze Chuan House</h1>
                     <div className={"flex gap-2"}>
-                        <Link href="/menu"
-                              className={"default-btn bg-custom-gold border-custom-gold hover:bg-background hover:text-custom-gold"}>Reserver bord</Link>
                         <Link href="/booking"
+                              className={"default-btn bg-custom-gold border-custom-gold hover:bg-background hover:text-custom-gold"}>Reserver bord</Link>
+                        <Link href="/menu"
                               className={"default-btn border-custom-gold text-custom-gold hover:bg-custom-gold hover:text-black"}>Se meny</Link>
                     </div>
                 </section>
