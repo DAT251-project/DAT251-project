@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Link from "next/link";
-import Image from "next/image";
 import {PhoneArrowDownLeftIcon} from '@heroicons/react/24/outline';
 import Container from "@/app/ui/Container";
+import Navbar from "@/app/ui/Navbar";
 
 export const metadata: Metadata = {
   title: "Sze Chuan House",
@@ -20,21 +19,10 @@ export default function RootLayout({
       <body
         className={`antialiased min-h-[100dvh] grid grid-rows-[auto_1fr_auto]`}
       >
-      <Container>
-          <nav className={"flex justify-between items-center border-b-2 border-white"}>
-              <Link href={"/"}>
-                  <Image src={"/logo.png"} alt={"Logo of the restaurant"} width={200} height={200}/>
-              </Link>
-              <ul className={"flex gap-10 uppercase font-title"}>
-                  <li><Link href="/menu" className={"btn py-2 text-white"}>Meny</Link></li>
-                  <li><Link href="/contact" className={"btn py-2 text-white"}>Kontakt oss</Link></li>
-                  <li><Link href="/booking" className={"default-btn text-white border-white hover:bg-custom-eggwhite hover:border-2 hover:border-custom-eggwhite hover:text-black"}>Reserver bord</Link></li>
-              </ul>
-          </nav>
-      </Container>
-          <main>
-            {children}
-          </main>
+      <Navbar/>
+          {/*<main>*/}
+          {/*  {children}*/}
+          {/*</main>*/}
         <footer className={"bg-custom-red text-white"}>
             <Container style={"flex justify-between px-30 py-8"}>
                 <section>
