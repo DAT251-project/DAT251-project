@@ -23,7 +23,6 @@ export default function Page () {
 
     return (<section className={"bg-custom-eggwhite h-full"}>
             <Container style={"flex flex-col items-center pt-30 gap-9"}>
-                <h2 className={"text-xl text-custom-gray"}>Velkommen</h2>
                 <BookingDetailsForm setBookingDetails={handleBookingState} />
                 {/*{showBookingForm ?*/}
                 {/*    <BookingDetailsForm setBookingDetails={handleBookingState}/> :*/}
