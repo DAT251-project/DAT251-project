@@ -346,6 +346,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                         {timeSlots.map((timeSlot: TimeSlot)=>(
                                 <button key={timeSlot.time} type={"button"}
                                     onClick={()=> handleTime(timeSlot.time)}
+                                        disabled={!timeSlot.available}
                                         aria-pressed={selectedTime === timeSlot.time}
                                         aria-disabled={timeSlot.available}
                                         className={clsx(
