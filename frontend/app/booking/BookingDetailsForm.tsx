@@ -6,9 +6,8 @@ import {z} from "zod";
 import {useState} from "react";
 import {InformationCircleIcon, ArrowLeftIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import {useMutation, QueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
 
 
 type TimeSlot = {
@@ -177,19 +176,16 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
         setValue("time", time, {shouldValidate: true})
         setSchemaSection("CONTACT")
     }
-
-    const queryClient = new QueryClient()
-
-    //const navigate = useNavigate();
+    
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: (formData: BookingSchemaType) => {
             return axios.post("http://localhost:8080/booking", formData)
         },
         onSuccess: () => {
-        //    navigate('/');
-        //}
-        queryClient.invalidateQueries({queryKey: ['booking']})
+            queryClient.invalidateQueries({queryKey: ['booking']})
+            console.log("Booking successful, query invalidated.")
         },
     })
 
