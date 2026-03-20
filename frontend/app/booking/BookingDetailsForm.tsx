@@ -78,7 +78,7 @@ const maxNumberGuest = 5;
 const guestsList: number[] = Array.from({length: maxNumberGuest}, (_, index) => index + 1);
 
 const bookingSchema = z.object({
-    numberOfGuest: z.number(),
+    numberGuest: z.number(),
     time: z.string(),
     date: z.string(),
     email: z.email(),
@@ -101,7 +101,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
     } = useForm<BookingSchemaType>({
         resolver: zodResolver(bookingSchema),
         defaultValues:{
-            numberOfGuest: 0,
+            numberGuest: 0,
             date: "",
             time: "",
         }
@@ -205,7 +205,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                                         {"col-span-full": lastbtn})}>{buttonText}</button>
                         })}
                     </div>
-                    {errors.numberOfGuest && <span id={"number-of-guests-error"}>{errors.numberOfGuest.message}</span>}
+                    {errors.numberGuest && <span id={"number-of-guests-error"}>{errors.numberGuest.message}</span>}
                     {showErrorGuest &&
                         <div className={"flex items-center bg-custom-eggwhite-dark p-2 rounded-md"}>
                             <InformationCircleIcon className={"w-9 h-9 mr-2"}/>

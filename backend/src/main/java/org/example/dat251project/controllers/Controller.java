@@ -21,6 +21,7 @@ public class Controller {
 
     @PostMapping("booking")
     public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
-        return null;
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/").toUri();
+        return ResponseEntity.created(location).body(booking);
     }
 }

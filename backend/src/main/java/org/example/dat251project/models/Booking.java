@@ -29,12 +29,14 @@ public class Booking {
     private int numberGuest;
     private LocalTime time;
     private Date date;
+    private String comment;
 
-    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, Date date) {
+    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, Date date, String comment) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.numberGuest = numberGuest;
         this.time = time;
         this.date = date;
+        this.comment = comment;
     }
 }
