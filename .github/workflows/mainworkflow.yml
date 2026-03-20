@@ -3,7 +3,6 @@ name: Main
 on:
   pull_request:
     branches:
-      - main
       - dev
 
 jobs:
