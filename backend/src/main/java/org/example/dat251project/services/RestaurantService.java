@@ -1,6 +1,7 @@
 package org.example.dat251project.services;
 
 import org.example.dat251project.models.Restaurant;
+import org.example.dat251project.models.Tables;
 import org.example.dat251project.repositories.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,12 @@ public class RestaurantService {
 
     public Restaurant createRestaurant(String name, String address, Integer phonenumber,
                                        Integer tableCapacity, OpeningHours opHours, Integer minuteInterval,
-                                       Set<DayOfWeek> closedDays) {
+                                       Set<DayOfWeek> closedDays, List<Tables> tables) {
         if (restaurantRepo.findByName(name).isEmpty()) {
             Map<DayOfWeek, OpeningHours> openingDays = generateOpeningDays(opHours, closedDays);
             Restaurant restaurant = new Restaurant(
                     name, address, phonenumber, tableCapacity, openingDays, opHours,
-                    generateTimeSlots(opHours, minuteInterval)
+                    generateTimeSlots(opHours, minuteInterval), tables
             );
             restaurantRepo.save(restaurant);
             return restaurant;

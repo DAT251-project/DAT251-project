@@ -44,7 +44,7 @@ public class DataInitializer {
                 closedDays.add(DayOfWeek.MONDAY);
                 restaurantService.createRestaurant(
                         "Sze Chuan House", "Nedre Korskirkeallmenningen 9",
-                        55313690, 20, opHours, 30, closedDays
+                        55313690, 20, opHours, 30, closedDays, null
                 );
             }
             if (userRepo.count() == 0) {

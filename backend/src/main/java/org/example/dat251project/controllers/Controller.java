@@ -18,9 +18,4 @@ public class Controller {
     public ResponseEntity<String> bookingPage() {
         return null;
     }
-
-    @PostMapping("booking")
-    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
-        return null;
-    }
 }

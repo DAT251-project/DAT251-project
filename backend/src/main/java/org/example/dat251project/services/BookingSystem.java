@@ -3,12 +3,15 @@ package org.example.dat251project.services;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.dat251project.models.Booking;
 import org.example.dat251project.models.Restaurant;
+import org.example.dat251project.models.Tables;
 import org.example.dat251project.repositories.BookingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,10 @@ public class BookingSystem {
     private BookingRepository bookingRepo;
     private Restaurant restaurant;
     private Integer remainingSeats;
+    private List<Tables> smallTables;
+    private List<Tables> bigTables;
+    private HashMap<Tables, List<Tables>> combination;
+
 
     public BookingSystem(BookingRepository bookingRepo, Restaurant restaurant) {
         this.bookingRepo = bookingRepo;
@@ -78,11 +85,49 @@ public class BookingSystem {
         }
         return availabilityMap;
     }
-
+    public boolean createBooking(LocalDate date, LocalTime time, int numGuests){
+        return checkAvailability(date, time, numGuests);
+    }
     //algorithm part
-    public boolean createBooking(LocalDate date, LocalTime time, int numGuests) {
+    public List<Tables> findBooking(LocalDate date, LocalTime time, int numGuests) {
         // TODO complex algorithm must be in place
         // BookingDTO? instead of three parameters? can be used as refactor step
-        return checkAvailability(date, time, numGuests);
+        List<Tables> table = new ArrayList<>();
+
+        if (!checkAvailability(date, time, numGuests)) return table;
+        if (numGuests > 7) return table;
+
+        if (numGuests <= 2) {
+            for (Tables t : smallTables) {
+                if (!t.isOccupied()) {
+                    t.setOccupied(true);
+                    table.add(t);
+                    return table;
+                }
+            }
+        } else if (numGuests <= 4) {
+            for (Tables t : bigTables) {
+                if (!t.isOccupied()) {
+                    t.setOccupied(true);
+                    table.add(t);
+                    return table;
+                }
+            }
+        }
+
+        combination.forEach((key, value) -> {
+            if (!key.isOccupied()) {
+                for (Tables t : value) {
+                    if (!t.isOccupied()) {
+                        t.setOccupied(true);
+                        table.add(t);
+                        table.add(key);
+                        break;
+                    }
+                }
+            }
+        });
+
+        return table;
     }
 }

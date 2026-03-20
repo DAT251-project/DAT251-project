@@ -43,9 +43,14 @@ public class Restaurant {
     @Column(name = "time_slots")
     private List<LocalTime> timeSlots;
 
+    @NotNull
+    private List<Tables> tables;
+
+
+
     public Restaurant(String name, String address, Integer phoneNumber,
                       Integer tableCapacity, Map<DayOfWeek, OpeningHours> openingDays, OpeningHours normalOpeningHours,
-                      List<LocalTime> timeSlots) {
+                      List<LocalTime> timeSlots, List<Tables> tables) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
@@ -53,5 +58,6 @@ public class Restaurant {
         this.openingDays = openingDays;
         this.normalOpeningHours = normalOpeningHours;
         this.timeSlots = timeSlots;
+        this.tables = tables;
     }
 }
