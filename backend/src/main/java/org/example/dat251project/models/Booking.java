@@ -8,9 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Getter
 @Setter
@@ -27,14 +30,31 @@ public class Booking {
     @NotNull
     private Integer phoneNumber;
     private int numberGuest;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date date;
+    private String comment;
 
-    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, Date date) {
+    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, Date date, String comment) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.numberGuest = numberGuest;
         this.time = time;
         this.date = date;
+        this.comment = comment;
     }
+
+
+    /**
+     * Testing below on bruno:
+    {
+  "comment": "efwefs",
+  "date": "2026-02-18",
+  "email": "hello@email.com",
+  "numberGuest": 2,
+  "phoneNumber": "78709870",
+  "time": "20:00"
+}
+     */
 }

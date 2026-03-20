@@ -6,6 +6,9 @@ import {z} from "zod";
 import {useEffect, useState} from "react";
 import {InformationCircleIcon, ArrowLeftIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import axios from "axios";
+
 
 type TimeSlot = {
     time: string,
@@ -84,7 +87,7 @@ const maxNumberGuest = 5;
 const guestsList: number[] = Array.from({length: maxNumberGuest}, (_, index) => index + 1);
 
 const bookingSchema = z.object({
-    numberOfGuest: z.number(),
+    numberGuest: z.number(),
     time: z.string(),
     date: z.string(),
     email: z.email(),
@@ -109,7 +112,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
     } = useForm<BookingSchemaType>({
         resolver: zodResolver(bookingSchema),
         defaultValues:{
-            numberOfGuest: 0,
+            numberGuest: 0,
             date: "",
             time: "",
         }
@@ -125,7 +128,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
 
     const selectedTime = watch("time");
     const selectedDate = watch("date");
-    const selectedNumberOfGuest = watch("numberOfGuest");
+    const selectedNumberOfGuest = watch("numberGuest");
 
     let firstDayOfMonth = new Date(currYear, date.getMonth(), 1).getDay();
     let lastDateOfMonth = new Date(currYear, date.getMonth() + 1, 0).getDate();
@@ -139,15 +142,16 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
         console.log("FORM BOOKING DETAILS SUBMITTED")
         console.log(data)
         setBookingDetails(data)
+        mutation.mutate(data);
     }
 
     const handleWrongGuests = () => {
         setShowErrorGuest(true);
-        setValue("numberOfGuest", maxNumberGuest, {shouldValidate: true});
+        setValue("numberGuest", maxNumberGuest, {shouldValidate: true});
     }
 
     const handleCorrectGuests = (value: number) => {
-        setValue("numberOfGuest", value, {shouldValidate: true});
+        setValue("numberGuest", value, {shouldValidate: true});
         setShowErrorGuest(false);
         setSchemaSection("DATE")
     }
@@ -209,6 +213,18 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
         setValue("time", time, {shouldValidate: true})
         setSchemaSection("CONTACT")
     }
+    
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationFn: (formData: BookingSchemaType) => {
+            return axios.post("http://localhost:8080/booking", formData)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['booking']})
+            console.log("Booking successful, query invalidated.")
+        },
+    })
 
     function isPastTime(time: string): boolean {
         const todaysDate = new Date();
@@ -243,7 +259,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                     <h3 className={"text-2xl text-center"}>Hvor mange gjester er dere?</h3>
                     <Controller
                         control={control}
-                        name={"numberOfGuest"}
+                        name={"numberGuest"}
                         render={({field}) =>
                             <input type={"number"}
                                    aria-label={"choose number of guests"}
@@ -267,7 +283,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                                         {"col-span-full": lastbtn})}>{buttonText}</button>
                         })}
                     </div>
-                    {errors.numberOfGuest && <span id={"number-of-guests-error"}>{errors.numberOfGuest.message}</span>}
+                    {errors.numberGuest && <span id={"number-of-guests-error"}>{errors.numberGuest.message}</span>}
                     {showErrorGuest &&
                         <div className={"flex items-center bg-custom-eggwhite-dark p-2 rounded-md"}>
                             <InformationCircleIcon className={"w-9 h-9 mr-2"}/>
