@@ -3,11 +3,14 @@ import "./globals.css";
 import {PhoneArrowDownLeftIcon} from '@heroicons/react/24/outline';
 import Container from "@/app/ui/Container";
 import Navbar from "@/app/ui/navbar/Navbar";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
   title: "Sze Chuan House",
   description: "Sze Chuan House's official website",
 };
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -19,6 +22,7 @@ export default function RootLayout({
       <body
         className={`antialiased min-h-dvh grid grid-rows-[auto_1fr_auto]`}
       >
+        <QueryClientProvider client={queryClient}>
       <Navbar/>
           <main>
             {children}
@@ -52,6 +56,7 @@ export default function RootLayout({
                 </section>
             </Container>
         </footer>
+        </QueryClientProvider>
       </body>
     </html>
   );

@@ -6,6 +6,10 @@ import {z} from "zod";
 import {useState} from "react";
 import {InformationCircleIcon, ArrowLeftIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import {useMutation, QueryClient} from "@tanstack/react-query";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
+
 
 type TimeSlot = {
     time: string,
@@ -113,7 +117,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
 
     const selectedTime = watch("time");
     const selectedDate = watch("date");
-    const selectedNumberOfGuest = watch("numberOfGuest");
+    const selectedNumberOfGuest = watch("numberGuest");
 
     let firstDayOfMonth = new Date(currYear, date.getMonth(), 1).getDay();
     let lastDateOfMonth = new Date(currYear, date.getMonth() + 1, 0).getDate();
@@ -127,15 +131,16 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
         console.log("FORM BOOKING DETAILS SUBMITTED")
         console.log(data)
         setBookingDetails(data)
+        mutation.mutate(data);
     }
 
     const handleWrongGuests = () => {
         setShowErrorGuest(true);
-        setValue("numberOfGuest", maxNumberGuest, {shouldValidate: true});
+        setValue("numberGuest", maxNumberGuest, {shouldValidate: true});
     }
 
     const handleCorrectGuests = (value: number) => {
-        setValue("numberOfGuest", value, {shouldValidate: true});
+        setValue("numberGuest", value, {shouldValidate: true});
         setShowErrorGuest(false);
         setSchemaSection("DATE")
     }
@@ -173,6 +178,21 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
         setSchemaSection("CONTACT")
     }
 
+    const queryClient = new QueryClient()
+
+    //const navigate = useNavigate();
+
+    const mutation = useMutation({
+        mutationFn: (formData: BookingSchemaType) => {
+            return axios.post("http://localhost:8080/booking", formData)
+        },
+        onSuccess: () => {
+        //    navigate('/');
+        //}
+        queryClient.invalidateQueries({queryKey: ['booking']})
+        },
+    })
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={"max-w-100 w-full"}>
             {schemaSection === "GUESTS" &&
@@ -181,7 +201,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                     <h3 className={"text-2xl text-center"}>Hvor mange gjester er dere?</h3>
                     <Controller
                         control={control}
-                        name={"numberOfGuest"}
+                        name={"numberGuest"}
                         render={({field}) =>
                             <input type={"number"}
                                    aria-label={"choose number of guests"}
