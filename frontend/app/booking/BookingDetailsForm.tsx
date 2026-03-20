@@ -3,7 +3,7 @@
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import {z} from "zod";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {InformationCircleIcon, ArrowLeftIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
@@ -111,6 +111,10 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
     const [currYear, setCurrYear] = useState(year);
     const [currMonthString, setCurrMonthString] = useState(month); // used for calendar header
 
+    // used to deactivate/activate calendar buttons
+    const [prevMonth, setPrevMonth] = useState(false)
+    const [nextMonth, setNextMonth] = useState(false)
+
     const selectedTime = watch("time");
     const selectedDate = watch("date");
     const selectedNumberOfGuest = watch("numberOfGuest");
@@ -140,6 +144,13 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
         setSchemaSection("DATE")
     }
 
+    const handleNextBtn = () => {
+        setNextMonth(false)
+        if (maxMonth !== (date.getMonth() + 1)){
+            setNextMonth(true)
+        }
+    }
+
     const handleNextMonth = () =>{
         // enforce maximum days ahead a customer can book table
         if (maxMonth !== (date.getMonth() + 1)){
@@ -147,6 +158,19 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
             const month: string = date.toLocaleDateString("no-NO", {month: "long"})
             setCurrMonthString(month)
             setCurrYear(date.getFullYear())
+        }
+
+        handlePrevBtn();
+        handleNextBtn();
+    }
+
+    const handlePrevBtn = () => {
+        const todaysDate = new Date();
+
+        setPrevMonth(false);
+        // prevent going back in time
+        if (todaysDate.getMonth() < date.getMonth()) {
+            setPrevMonth(true)
         }
     }
 
@@ -160,7 +184,16 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
             setCurrMonthString(month)
             setCurrYear(date.getFullYear())
         }
+        handlePrevBtn();
+        handleNextBtn();
+
+        return prevMonth
     }
+
+    useEffect(()=> {
+        handlePrevBtn();
+        handleNextBtn();
+    }, [])
 
     const handleSelectDate = (dateValue: number) => {
         const dateString = `${currYear}-${date.getMonth() + 1}-${dateValue}`;
@@ -234,8 +267,16 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                         <div className={"flex justify-between px-1"}>
                             <h4 className={"text-2xl capitalize"}>{currMonthString} {currYear}</h4>
                             <div className={"flex gap-2"}>
-                                <ArrowLeftIcon className={"w-6"} onClick={handlePrevMonth}/>
-                                <ArrowRightIcon className={"w-6"} onClick={handleNextMonth}/>
+                                <ArrowLeftIcon
+                                    aria-disabled={!prevMonth}
+                                    className={clsx("w-6",
+                                        {"text-gray-500": !prevMonth})}
+                                    onClick={handlePrevMonth}/>
+                                <ArrowRightIcon
+                                    aria-disabled={!nextMonth}
+                                    className={clsx("w-6",
+                                        {"text-gray-500": !nextMonth})}
+                                    onClick={handleNextMonth}/>
                             </div>
                         </div>
                         {/*calendar days*/}
