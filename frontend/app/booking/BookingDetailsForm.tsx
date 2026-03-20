@@ -209,7 +209,7 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                     {showErrorGuest &&
                         <div className={"flex items-center bg-custom-eggwhite-dark p-2 rounded-md"}>
                             <InformationCircleIcon className={"w-9 h-9 mr-2"}/>
-                            <p>Er dere over {maxNumberGuest} personer, ta kontakt med oss</p>
+                            <p>Er dere over {maxNumberGuest} personer, ta kontakt med oss på tlf: <a href={"tel:+47-553-136-90"}>+47 553 136 90</a></p>
                         </div>}
                 </section>
             }
