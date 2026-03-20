@@ -92,28 +92,33 @@ public class TestBookingSystem {
         restaurant.setTimeSlots(timeSlots);
 
         BookingSystem bookingSystem = new BookingSystem(bookingRepo, restaurant);
-        Tables temp = restaurant.getTables().get(1);
-        Tables temp1 = restaurant.getTables().get(3);
-        List<Tables> temp4 = new ArrayList<>();
-        temp4.add(temp);
-        temp4.add(temp1);
-        bookingSystem.setSmallTables(temp4);
+        Tables table2 = restaurant.getTables().get(1);
+        Tables table4 = restaurant.getTables().get(3);
+        List<Tables> smallTables = new ArrayList<>();
+        smallTables.add(table2);
+        smallTables.add(table4);
+        bookingSystem.setSmallTables(smallTables);
+
 
         LocalDate date = LocalDate.of(2026, 3, 10);
         LocalTime time = LocalTime.of(18, 0);
         int numGuests = 2;
 
         Mockito.when(bookingRepo.sumGuestsByDateAndTime(date, time)).thenReturn(0);
+        List<Tables> booking1 = bookingSystem.findBooking(date, time, numGuests);
+        assertEquals(1, booking1.size());
+        assertEquals("T2", booking1.getFirst().getName());
 
-        assertEquals(1, bookingSystem.findBooking(date, time, numGuests).size());
-        assertEquals(temp1, bookingSystem.findBooking(date, time, numGuests).get(0));
-
-
+        List<Tables> booking2 = bookingSystem.findBooking(date, time, 1);
+        assertEquals(1, booking2.size());
+        assertEquals("T4", booking2.getFirst().getName());
 
     }
 
     @Test
-    public void testBigBooking() {}
+    public void testBigBooking() {
+
+    }
 
     @Test
     public void testComboBooking() {}

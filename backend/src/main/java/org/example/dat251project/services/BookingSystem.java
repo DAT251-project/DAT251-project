@@ -105,7 +105,8 @@ public class BookingSystem {
                     return table;
                 }
             }
-        } else if (numGuests <= 4) {
+        }
+        if (numGuests <= 4) {
             for (Tables t : bigTables) {
                 if (!t.isOccupied()) {
                     t.setOccupied(true);
