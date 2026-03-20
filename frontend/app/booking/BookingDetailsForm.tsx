@@ -304,12 +304,14 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
                                 }
 
                                return <button key={dateItem}
+                                              disabled={!isValidDay}
                                         onClick={() => handleSelectDate(Number(dateItem))}
                                               aria-disabled={isValidDay}
                                               aria-pressed={isSelectedDay}
-                                        className={clsx("text-xl p-2 rounded-md hover:bg-gray-300 transition-colors",
+                                        className={clsx("text-xl p-2 rounded-md",
                                             { "text-custom-red": dateItem === todaysDate && date.getMonth() === todaysMonth},
                                             {"text-gray-400": !isValidDay},
+                                            {"hover:bg-gray-300 transition-colors": isValidDay},
                                             {"bg-gray-300": isSelectedDay})}>{dateItem}</button>
                             })}
                         </div>
