@@ -6,26 +6,29 @@ import org.example.dat251project.models.Tables;
 import org.example.dat251project.repositories.BookingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class TestBookingSystem {
     private final String email = "email@email.com";
     private final Integer phoneNumber = 1234;
     private Restaurant restaurant;
     @Mock
     private BookingRepository bookingRepo;
-
+    @Mock
+    private BookingService bookingService;
 
     @BeforeEach
     void setup() {
@@ -50,10 +53,11 @@ public class TestBookingSystem {
         combo.put(t2, new ArrayList<>(Arrays.asList(t1, t3)));
         combo.put(t3, new ArrayList<>(List.of(t4)));
         restaurant.setCombination(combo);
+        bookingService = Mockito.mock(BookingService.class);
     }
 
     private void mockBooking(LocalDate date, LocalTime time, int numGuests, List<Tables> confirmedBooking) {
-        Mockito.when(bookingRepo.findByDateAndTime(date, time))
+        Mockito.when(bookingService.findByDateAndTime(date, time))
                 .thenReturn(List.of(
                         new Booking(email, phoneNumber, numGuests, time, date, confirmedBooking)
                 ));
@@ -64,7 +68,7 @@ public class TestBookingSystem {
         Integer negativeSeat = -5;
         restaurant.setRestaurantCapacity(negativeSeat);
         assertThrows(IllegalArgumentException.class, () ->
-                new BookingSystem(bookingRepo, restaurant));
+                new BookingSystem(restaurant));
     }
 
     @Test
@@ -79,7 +83,7 @@ public class TestBookingSystem {
         restaurant.setRestaurantCapacity(5);
         restaurant.setNormalOpeningHours(openingHours);
         assertThrows(IllegalArgumentException.class, () ->
-                new BookingSystem(bookingRepo, restaurant));
+                new BookingSystem(restaurant));
 
     }
 
@@ -91,17 +95,19 @@ public class TestBookingSystem {
         restaurant.setNormalOpeningHours(openingHours);
         restaurant.setRestaurantCapacity(5);
         restaurant.setTimeSlots(timeSlots);
-        BookingSystem bookingSystem = new BookingSystem(bookingRepo, restaurant);
-
+        BookingSystem bookingSystem = new BookingSystem(restaurant);
+        bookingSystem.setBookingService(bookingService);
         // If refactor to using DTO, remember to change it here as well
         LocalDate date = LocalDate.of(2026, 3, 10);
         LocalTime time = LocalTime.of(18, 0);
         int numGuests = 2;
-
-        // Mock the repository to return 0 guests that are in the restaurant at that time
-        Mockito.when(bookingRepo.sumGuestsByDateAndTime(date, time)).thenReturn(0);
-
-        assertTrue(bookingSystem.createBooking(date, time, numGuests));
+        // Mock the avilability
+        for (LocalTime timeslot : restaurant.getTimeSlots()) {
+            Mockito.when(bookingService.findByDateAndTime(date, timeslot))
+                    .thenReturn(new ArrayList<>()); // No bookings yet, all tables free
+        }
+        Map<LocalTime, Boolean> availableTime = bookingSystem.getAvailabilityForDate(date, numGuests);
+        assertTrue(availableTime.get(time));
     }
 
 
@@ -114,14 +120,12 @@ public class TestBookingSystem {
         restaurant.setRestaurantCapacity(20);
         restaurant.setTimeSlots(timeSlots);
 
-        BookingSystem bookingSystem = new BookingSystem(bookingRepo, restaurant);
-
+        BookingSystem bookingSystem = new BookingSystem(restaurant);
+        bookingSystem.setBookingService(bookingService);
 
         LocalDate date = LocalDate.of(2026, 3, 10);
         LocalTime time = LocalTime.of(18, 0);
         int numGuests = 2;
-
-        Mockito.when(bookingRepo.sumGuestsByDateAndTime(date, time)).thenReturn(0);
         List<Tables> booking1 = bookingSystem.findBooking(date, time, numGuests);
         assertEquals(1, booking1.size());
         assertTrue(restaurant.getSmallTables().contains(booking1.getFirst()));
@@ -144,14 +148,13 @@ public class TestBookingSystem {
         restaurant.setRestaurantCapacity(20);
         restaurant.setTimeSlots(timeSlots);
 
-        BookingSystem bookingSystem = new BookingSystem(bookingRepo, restaurant);
-
+        BookingSystem bookingSystem = new BookingSystem(restaurant);
+        bookingSystem.setBookingService(bookingService);
 
         LocalDate date = LocalDate.of(2026, 3, 10);
         LocalTime time = LocalTime.of(18, 0);
         int numGuests = 3;
 
-        Mockito.when(bookingRepo.sumGuestsByDateAndTime(date, time)).thenReturn(0);
         List<Tables> booking1 = bookingSystem.findBooking(date, time, numGuests);
         assertEquals(1, booking1.size());
         assertTrue(restaurant.getBigTables().contains(booking1.getFirst()));
@@ -174,13 +177,13 @@ public class TestBookingSystem {
         restaurant.setRestaurantCapacity(20);
         restaurant.setTimeSlots(timeSlots);
 
-        BookingSystem bookingSystem = new BookingSystem(bookingRepo, restaurant);
-
+        BookingSystem bookingSystem = new BookingSystem(restaurant);
+        bookingSystem.setBookingService(bookingService);
 
         LocalDate date = LocalDate.of(2026, 3, 10);
         LocalTime time = LocalTime.of(18, 0);
         int numGuests = 5;
-        Mockito.when(bookingRepo.sumGuestsByDateAndTime(date, time)).thenReturn(0);
+
 
         List<Tables> booking1 = bookingSystem.findBooking(date, time, numGuests);
         assertEquals(2, booking1.size());

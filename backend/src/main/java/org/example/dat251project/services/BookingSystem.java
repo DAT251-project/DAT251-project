@@ -4,10 +4,11 @@ import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.dat251project.dtos.BookingDTO;
 import org.example.dat251project.models.Booking;
 import org.example.dat251project.models.Restaurant;
 import org.example.dat251project.models.Tables;
-import org.example.dat251project.repositories.BookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,10 +20,10 @@ import java.util.*;
 @NoArgsConstructor
 @Service
 public class BookingSystem {
-    private BookingRepository bookingRepo;
     private Restaurant restaurant;
     private Integer remainingSeats;
-
+    @Autowired
+    private BookingService bookingService;
     @Transient
     private List<Tables> smallTables;
     @Transient
@@ -30,8 +31,7 @@ public class BookingSystem {
     @Transient
     private Map<Tables, List<Tables>> combination = new HashMap<>();
 
-    public BookingSystem(BookingRepository bookingRepo, Restaurant restaurant) {
-        this.bookingRepo = bookingRepo;
+    public BookingSystem(Restaurant restaurant) {
         this.restaurant = restaurant;
         this.remainingSeats = restaurant.getRestaurantCapacity();
         this.smallTables = restaurant.getSmallTables();
@@ -74,18 +74,15 @@ public class BookingSystem {
      * @param date
      * @param time
      * @param numGuests
-     * @return true if there is enough capacity, false otherwise
+     * @return true if there is a table available, false otherwise
      */
     private boolean checkAvailability(LocalDate date, LocalTime time, int numGuests) {
-        // TODO gottta fix
-        Integer totalGuests = bookingRepo.sumGuestsByDateAndTime(date, time);
-        if (totalGuests == null) totalGuests = 0;
+        List<Tables> possibleTables = findBooking(date, time, numGuests);
+        return !possibleTables.isEmpty();
 
-        return numGuests + totalGuests <= restaurant.getRestaurantCapacity();
     }
 
     public Map<LocalTime, Boolean> getAvailabilityForDate(LocalDate date, int numGuests) {
-        // TODO gotta fix
         Map<LocalTime, Boolean> availabilityMap = new HashMap<>();
         for (LocalTime timeslot : restaurant.getTimeSlots()) {
             availabilityMap.put(timeslot, checkAvailability(date, timeslot, numGuests));
@@ -93,8 +90,13 @@ public class BookingSystem {
         return availabilityMap;
     }
 
-    public boolean createBooking(LocalDate date, LocalTime time, int numGuests) {
-        return checkAvailability(date, time, numGuests);
+    public Booking createBooking(BookingDTO bookingDTO, List<Tables> tables) {
+        // TODO, add email
+        Booking booking = bookingService.createBooking(bookingDTO, tables);
+        if (booking != null) {
+            bookingService.createEmailBooking();
+        }
+        return booking;
     }
 
     /**
@@ -122,9 +124,9 @@ public class BookingSystem {
         List<Tables> result = new ArrayList<>();
         int bestWaste = restaurant.getRestaurantCapacity() + 1;
         int bestComboImpact = restaurant.getRestaurantCapacity();
-        if (!checkAvailability(date, time, numGuests)) return result;
+
         if (numGuests > 7) return result;
-        List<Booking> bookings = bookingRepo.findByDateAndTime(date, time);
+        List<Booking> bookings = bookingService.findByDateAndTime(date, time);
         Set<Tables> occupiedTables = new HashSet<>();
         for (Booking b : bookings) {
             occupiedTables.addAll(b.getTables());

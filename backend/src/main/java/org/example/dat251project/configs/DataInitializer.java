@@ -73,7 +73,7 @@ public class DataInitializer {
     public BookingSystem bookingSystem() {
         Restaurant restaurant = restaurantRepo.findByName("Sze Chuan House")
                 .orElseThrow(() -> new IllegalStateException("Restaurant not found"));
-        return new BookingSystem(bookingRepo, restaurant);
+        return new BookingSystem(restaurant);
     }
 
 
