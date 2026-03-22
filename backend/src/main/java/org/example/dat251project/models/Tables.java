@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -24,5 +25,17 @@ public class Tables {
     public Tables(String name, Integer numOfSeats) {
         this.name = name;
         this.numOfSeats = numOfSeats;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tables table)) return false;
+        return id != null && id.equals(table.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
