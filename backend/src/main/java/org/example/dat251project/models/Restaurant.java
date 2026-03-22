@@ -17,34 +17,29 @@ import java.util.*;
 @Entity
 @Table
 public class Restaurant {
+    public final int MAXGROUPSIZE = 7;
+    public final int SMALLTABLEMAX = 2;
+    public final int BIGTABLEMAX = 4;
     @Id
     @NotNull
     private String name;
-
     @NotNull
     private String address;
-
     @NotNull
     private Integer phoneNumber;
-
     @NotNull
     private Integer restaurantCapacity;
-
     @ElementCollection
     @MapKeyColumn(name = "day_of_week")
     @Column(name = "openingDays")
     private Map<DayOfWeek, OpeningHours> openingDays = new HashMap<>();
     @Embedded
     private OpeningHours normalOpeningHours;
-
     @ElementCollection
     @Column(name = "time_slots")
     private List<LocalTime> timeSlots;
-
-
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Tables> tables;
-
     @Transient
     private List<Tables> smallTables;
     @Transient
@@ -63,8 +58,8 @@ public class Restaurant {
         this.normalOpeningHours = normalOpeningHours;
         this.timeSlots = timeSlots;
         this.tables = tables;
-        this.smallTables = divideTableSize(tables, 1, 2);
-        this.bigTables = divideTableSize(tables, 3, 4);
+        this.smallTables = divideTableSize(tables, 1, SMALLTABLEMAX);
+        this.bigTables = divideTableSize(tables, SMALLTABLEMAX + 1, BIGTABLEMAX);
         this.combination = combination;
     }
 
@@ -139,8 +134,8 @@ public class Restaurant {
 
     public void setTables(List<Tables> tables) {
         this.tables = tables;
-        this.smallTables = divideTableSize(tables, 1, 2);
-        this.bigTables = divideTableSize(tables, 3, 4);
+        this.smallTables = divideTableSize(tables, 1, SMALLTABLEMAX);
+        this.bigTables = divideTableSize(tables, SMALLTABLEMAX + 1, BIGTABLEMAX);
     }
 
     public List<Tables> findBestSmallTables(Set<Tables> occupiedTables, int numGuests) {

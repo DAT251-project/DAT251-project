@@ -117,11 +117,11 @@ public class BookingSystem {
         List<Tables> bestTables = new ArrayList<>();
         Set<Tables> occupiedTables = getOccupiedTables(date, time);
 
-        if (numGuests > 7) return bestTables;
-        if (numGuests <= 2) {
+        if (numGuests > restaurant.MAXGROUPSIZE) return bestTables;
+        if (numGuests <= restaurant.SMALLTABLEMAX) {
             bestTables = restaurant.findBestSmallTables(occupiedTables, numGuests);
         }
-        if (numGuests <= 4 && bestTables.isEmpty()) {
+        if (numGuests <= restaurant.BIGTABLEMAX && bestTables.isEmpty()) {
             bestTables = restaurant.findBestBigTables(occupiedTables, numGuests);
         }
         if (bestTables.isEmpty()) {
