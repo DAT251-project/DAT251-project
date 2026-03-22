@@ -22,6 +22,7 @@ public class EmailService {
         helper.setFrom(fromEmailUser);
         helper.setTo(booking.getEmail());
         // TODO make it prettier?
+
         helper.setSubject("Booking confirmation " + booking.getDate());
         String msg = "<h1> Booking Confirmation </h2>" +
                 "<p> Your booking has been confirmed </p>" +
