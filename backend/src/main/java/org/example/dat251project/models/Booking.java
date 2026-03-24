@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -30,21 +30,28 @@ public class Booking {
     @NotNull
     private Integer phoneNumber;
     private int numberGuest;
+  
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
+  
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date date;
+    private LocalDate date;
+  
     private String comment;
+  
+    @ManyToMany
+    @JoinTable(name = "booking_tables")
+    private List<Tables> tables;
 
-    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, Date date, String comment) {
+    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, LocalDate date, String comment, List<Tables> tables) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.numberGuest = numberGuest;
         this.time = time;
         this.date = date;
         this.comment = comment;
+        this.tables = tables;
     }
-
 
     /**
      * Testing below on bruno:
