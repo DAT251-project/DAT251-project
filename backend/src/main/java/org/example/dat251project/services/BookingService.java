@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,11 +27,10 @@ public class BookingService {
                 bookingDTO.getComment(),
                 tables
         );
-        bookingRepo.save(booking);
-        return booking;
+        return bookingRepo.save(booking);
     }
 
-    public List<Booking> findByDateAndTime(LocalDate date, LocalTime time) {
+    public List<Booking> findByDateAndTime(Date date, LocalTime time) {
         return bookingRepo.findByDateAndTime(date, time);
     }
 }

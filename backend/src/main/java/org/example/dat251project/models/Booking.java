@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class Booking {
     private LocalTime time;
   
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
+    private Date date;
   
     private String comment;
   
@@ -43,7 +44,7 @@ public class Booking {
     @JoinTable(name = "booking_tables")
     private List<Tables> tables;
 
-    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, LocalDate date, String comment, List<Tables> tables) {
+    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, Date date, String comment, List<Tables> tables) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.numberGuest = numberGuest;

@@ -4,6 +4,7 @@ import org.example.dat251project.dtos.BookingDTO;
 import org.example.dat251project.dtos.BookingResponseDTO;
 import org.example.dat251project.models.Booking;
 import org.example.dat251project.models.Tables;
+import org.example.dat251project.repositories.BookingRepository;
 import org.example.dat251project.services.BookingService;
 import org.example.dat251project.services.BookingSystem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin()
 @RestController
@@ -23,6 +25,9 @@ public class Controller {
     BookingSystem bookingSystem;
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @GetMapping("menu")
     public ResponseEntity<URL> menu() {
@@ -48,12 +53,26 @@ public class Controller {
                         .time(booking.getTime())
                         .date(booking.getDate())
                         .comment(booking.getComment())
-                        .tableNames(bookingSystem.getTableNames(booking.getTables()))
                         .build();
                 return ResponseEntity.ok().body(bookingResponseDTO);
             }
         }
         return ResponseEntity.badRequest().build();
 
+    }
+
+    @GetMapping("booking/{id}")
+    public ResponseEntity<BookingResponseDTO> getBooking(@PathVariable UUID id) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        BookingResponseDTO bookingResponseDTO = BookingResponseDTO.builder()
+                .id(booking.getId())
+                .email(booking.getEmail())
+                .phoneNumber(booking.getPhoneNumber())
+                .numberGuest(booking.getNumberGuest())
+                .time(booking.getTime())
+                .date(booking.getDate())
+                .comment(booking.getComment())
+                .build();
+        return ResponseEntity.ok().body(bookingResponseDTO);
     }
 }

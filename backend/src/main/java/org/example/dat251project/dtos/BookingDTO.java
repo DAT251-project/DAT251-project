@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -15,6 +16,6 @@ public class BookingDTO {
     private Integer phoneNumber;
     private int numberGuest;
     private LocalTime time;
-    private LocalDate date;
+    private Date date;
     private String comment;
 }

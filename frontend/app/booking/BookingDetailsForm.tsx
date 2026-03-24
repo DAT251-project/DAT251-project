@@ -206,7 +206,11 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
     }
 
     const handleSelectDate = (dateValue: number) => {
-        const dateString = `${currYear}-${date.getMonth() + 1}-${dateValue}`;
+        let month = date.getMonth() + 1
+        if (month < 10) {
+            month = "0" + month.toString()
+            }
+        const dateString = `${currYear}-${month}-${dateValue}`;
         setValue("date", dateString, {shouldValidate: true})
         setSchemaSection("TIME");
         handlePastTimeSlots();
@@ -219,14 +223,15 @@ export default function BookingDetailsForm({setBookingDetails}:{setBookingDetail
     
     const queryClient = useQueryClient();
 
-    const {data, mutate} = useMutation({
+    const {mutate} = useMutation({
         mutationFn: (formData: BookingSchemaType) => {
             return axios.post("http://localhost:8080/booking", formData)
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries({queryKey: ['booking']})
             console.log("Booking successful, query invalidated.")
             console.log(data);
+            router.push(`/booking/${data.data.id}`);
         },
     })
 
