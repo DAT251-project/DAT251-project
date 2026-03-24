@@ -20,5 +20,6 @@ public class BookingResponseDTO {
     private LocalTime time;
     private LocalDate date;
     private String comment;
+    // remove tablenames TODO
     private List<String> tableNames;
 }

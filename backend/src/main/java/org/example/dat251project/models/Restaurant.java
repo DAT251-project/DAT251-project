@@ -17,9 +17,9 @@ import java.util.*;
 @Entity
 @Table
 public class Restaurant {
-    public final int MAXGROUPSIZE = 7;
-    public final int SMALLTABLEMAX = 2;
-    public final int BIGTABLEMAX = 4;
+    public static final int MAXGROUPSIZE = 7;
+    public static final int SMALLTABLEMAX = 2;
+    public static final int BIGTABLEMAX = 4;
     @Id
     @NotNull
     private String name;
