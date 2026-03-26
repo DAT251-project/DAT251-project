@@ -27,7 +27,7 @@ export default function Page(){
                         <p>Booking bekreftelse ble sendt til <span className={"font-bold"}>{data.email}</span></p>
                         <p>Antall gjester: <span className={"font-bold"}>{data.numberGuest}</span></p>
                         <p>Dato: <span className={"font-bold"}>{data.date.split("T")[0]}</span></p>
-                        <p>Tid: <span className={"font-bold"}>{data.time}</span></p>
+                        <p>Tid: <span className={"font-bold"}>{data.time.slice(0,-3)}</span></p>
                         <p>Telefonnummer: <span className={"font-bold"}>{data.phoneNumber}</span></p>
                         <p>Kommentar: <span>{data.comment}</span></p>
                     </div>

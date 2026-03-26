@@ -1,20 +1,22 @@
-import {BookingSchemaType} from "@/app/booking/FormTypes";
 import React from "react";
 import {SchemaSections} from "@/app/booking/page";
 import {ArrowLeftIcon} from "@heroicons/react/24/outline";
 
-export default function ContactDetailsForm({register, errors, formState, setSchemaSelection}:
+export default function ContactDetailsForm({register, errors, watch, setSchemaSelection}:
    {
        register:any,
        errors:any,
-       formState:Partial<BookingSchemaType>
+       watch:any,
        setSchemaSelection: React.Dispatch<React.SetStateAction<SchemaSections>>
    }){
+    const chosenNumberGuest = watch("numberGuest");
+    const chosenFullDate = watch("date");
+    const chosenTime = watch("time");
 
     return (
         <section className={"flex flex-col gap-5"}>
-            <h2 className={"text-xl text-custom-gray text-center"}>{formState.numberGuest} personer</h2>
-            <h2 className={"text-xl text-custom-gray text-center"}>{formState.date}, kl. {formState.time}</h2>
+            <h2 className={"text-xl text-custom-gray text-center"}>{chosenNumberGuest} personer</h2>
+            <h2 className={"text-xl text-custom-gray text-center"}>{chosenFullDate}, kl. {chosenTime}</h2>
             <h3 className={"text-2xl text-center font-title"}>Fyll ut kontaktinformasjon</h3>
 
             <section className={"flex flex-col gap-9 mt-5"}>

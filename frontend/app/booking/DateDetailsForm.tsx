@@ -1,7 +1,6 @@
-import {BookingSchemaType} from "@/app/booking/FormTypes";
 import React, {useEffect, useState} from "react";
 import {SchemaSections} from "@/app/booking/page";
-import {Controller} from "react-hook-form";
+import {useController} from "react-hook-form";
 import {ArrowLeftIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
@@ -10,14 +9,17 @@ let date: Date = new Date();
 const maxFutureMonth = 2;
 let maxMonth:number = (date.getMonth() + maxFutureMonth + 1) % 12
 
-export default function DateDetailsForm({control, errors, formState, setFormStateAction, setSchemaSelection}:
+export default function DateDetailsForm({control, errors, watch, setSchemaSelection}:
     {
         control:any,
         errors:any,
-        formState:Partial<BookingSchemaType>
-        setFormStateAction: React.Dispatch<React.SetStateAction<Partial<BookingSchemaType>>>
+        watch:any,
         setSchemaSelection: React.Dispatch<React.SetStateAction<SchemaSections>>
     }){
+    const {field} = useController({name: "date", control})
+    const chosenNumberGuest = watch("numberGuest");
+    const chosenFullDate = watch("date");
+
     // used to deactivate/activate calendar buttons
     const [prevMonth, setPrevMonth] = useState(false)
     const [nextMonth, setNextMonth] = useState(false)
@@ -67,10 +69,7 @@ export default function DateDetailsForm({control, errors, formState, setFormStat
         }
 
         const dateString = `${date.getFullYear()}-${monthString}-${dateValue}`;
-        setFormStateAction(prevState => ({
-            ...prevState,
-            date: dateString
-        }));
+        field.onChange(dateString);
         setSchemaSelection("TIME");
     }
 
@@ -82,8 +81,8 @@ export default function DateDetailsForm({control, errors, formState, setFormStat
         let selectedDay: boolean = false;
         let validDay: boolean = true;
 
-        if (formState.date !== undefined) {
-            let chosenDate: string[] = (formState.date).split("-")
+        if (chosenFullDate !== undefined) {
+            let chosenDate: string[] = chosenFullDate.split("-")
             let chosenYear: number = Number(chosenDate[0]);
             let chosenMonth: number = Number(chosenDate[1])
             let chosenDay: number = Number(chosenDate[2]);
@@ -102,25 +101,17 @@ export default function DateDetailsForm({control, errors, formState, setFormStat
 
     useEffect(()=> {
         updateCalendarBtn();
-        console.log(formState);
     }, [])
 
     return (
         <section className={"flex flex-col gap-5"}>
-            <h2 className={"text-xl text-custom-gray text-center"}>{formState.numberGuest} personer</h2>
+            <h2 className={"text-xl text-custom-gray text-center"}>{chosenNumberGuest} personer</h2>
             <h3 className={"text-2xl text-center"}>Velg dato</h3>
-            <Controller
-                control={control}
-                name={"date"}
-                render={({field}) =>
-                    <input
-                        aria-label={"choose date of booking"}
-                        aria-controls={"calendar"}
-                        aria-describedby={"calendar-error"}
-                        className={"sr-only"}
-                        {...field}
-                        onChange={e => field.onChange(e.target.value)}/>}
-            />
+            <input
+                aria-label={"choose date of booking"}
+                aria-controls={"calendar"}
+                aria-describedby={"calendar-error"}
+                className={"sr-only"}/>
             <div role={"group"} id={"calendar"}>
                 {/*calendar header*/}
                 <div className={"flex justify-between px-1"}>

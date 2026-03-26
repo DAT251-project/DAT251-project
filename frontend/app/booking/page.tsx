@@ -19,10 +19,12 @@ export default function Page () {
     const {
         register,
         handleSubmit,
+        watch,
         control,
         formState: { errors },
     } = useForm<BookingSchemaType>({
         resolver: zodResolver(bookingSchema),
+        shouldUnregister: false,
         defaultValues:{
             numberGuest: 0,
             date: "",
@@ -30,7 +32,6 @@ export default function Page () {
         }
     })
     const [schemaSection, setSchemaSection] = useState<SchemaSections>("GUESTS");
-    const [formState, setFormState] = useState<Partial<BookingSchemaType>>({});
 
     const router = useRouter();
 
@@ -51,36 +52,31 @@ export default function Page () {
         },
     })
 
-    console.log(formState);
-
     return (<section className={"bg-custom-eggwhite h-full"}>
        <Container style={"flex flex-col items-center px-5 py-20 2xl:py-30 gap-9"}>
            <form onSubmit={handleSubmit(onSubmit)} className={"max-w-100 w-full"}>
                {schemaSection === "GUESTS" &&
                    <GuestsDetailsForm control={control}
                                       errors={errors}
-                                      formState={formState}
-                                      setFormStateAction={setFormState}
+                                      watch={watch}
                                       setSchemaSelection={setSchemaSection}/>
                }
                {schemaSection === "DATE" &&
                    <DateDetailsForm control={control}
                                     errors={errors}
-                                    formState={formState}
-                                    setFormStateAction={setFormState}
+                                    watch={watch}
                                     setSchemaSelection={setSchemaSection}/>
                }
                {schemaSection === "TIME" &&
                    <TimeDetailsForm control={control}
                                     errors={errors}
-                                    formState={formState}
-                                    setFormStateAction={setFormState}
+                                    watch={watch}
                                     setSchemaSelection={setSchemaSection}/>
                }
                {schemaSection === "CONTACT" &&
                    <ContactDetailsForm register={register}
                                        errors={errors}
-                                       formState={formState}
+                                       watch={watch}
                                        setSchemaSelection={setSchemaSection}/>
                }
            </form>
