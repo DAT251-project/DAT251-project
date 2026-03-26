@@ -74,10 +74,18 @@ export default function Page () {
                                     setSchemaSelection={setSchemaSection}/>
                }
                {schemaSection === "CONTACT" &&
-                   <ContactDetailsForm register={register}
-                                       errors={errors}
-                                       watch={watch}
-                                       setSchemaSelection={setSchemaSection}/>
+                   <>
+                       <ContactDetailsForm register={register}
+                                           errors={errors}
+                                           watch={watch}
+                                           setSchemaSelection={setSchemaSection}/>
+                       <div className={"flex justify-center"}>
+                           <button type="submit"
+                                   className={"bg-black text-lg text-white w-fit py-2 px-8 rounded-3xl border-2 hover:bg-inherit hover:text-black"}>
+                               Reserver
+                           </button>
+                       </div>
+                   </>
                }
            </form>
         </Container>

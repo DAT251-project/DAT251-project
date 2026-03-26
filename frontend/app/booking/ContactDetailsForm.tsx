@@ -51,10 +51,6 @@ export default function ContactDetailsForm({register, errors, watch, setSchemaSe
                     className={"p-2 border-2 rounded-full w-fit scale-90 hover:scale-100 transition-all"}>
                     <ArrowLeftIcon className={"w-8 h-8"}/>
                 </button>
-                <button type="submit"
-                        className={"bg-black text-lg text-white w-fit py-2 px-8 rounded-3xl border-2 hover:bg-inherit hover:text-black"}>
-                    Reserver
-                </button>
             </div>
         </section>
     )
