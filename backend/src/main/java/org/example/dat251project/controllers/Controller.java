@@ -29,4 +29,9 @@ public class Controller {
         //URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/").toUri();
         return ResponseEntity.status(HttpStatus.CREATED).body(booking);
     }
+
+    @GetMapping("dashboard")
+    public ResponseEntity<String> dashboardPage() {
+        return null;
+    }
 }
