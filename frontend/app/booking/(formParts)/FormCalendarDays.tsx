@@ -3,17 +3,28 @@ import React from "react";
 
 const days: string[] = ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"]
 
+/**
+ * Renders a calendar grid for a given month and allows users to select a date
+ * @param date - month and year to display
+ * @param chosenFullDate - currently selected date
+ * @param handleSelectDate - callback triggered when user selects a date
+ */
 export default function FormCalendarDays({date, chosenFullDate, handleSelectDate}:{
     date: Date, chosenFullDate: string, handleSelectDate:(value: number) => void
 }){
-    // used to decide the days in the calendar
+    // Used to decide the days in the calendar
     let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
     let lastDateOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-    let gridSpace = (firstDayOfMonth + 6) % 7; // used to place the date numbers under correct day
+    let gridSpace = (firstDayOfMonth + 6) % 7; // Used to place the date numbers under correct day
     const dateInMonth: number[] = Array.from({length: lastDateOfMonth}, (_, index) => index + 1);
 
     const todaysDate = new Date();
 
+    /**
+     * Checks if given date is already selected by user, and if it's valid (not in the past)
+     * @param dateItem - date to check
+     * @return Boolean
+     */
     function getStateOfDay(dateItem: number):boolean[] {
         let selectedDay: boolean = false;
         let validDay: boolean = true;
@@ -37,12 +48,15 @@ export default function FormCalendarDays({date, chosenFullDate, handleSelectDate
     }
     return (
         <div className={"grid grid-cols-7 mt-5 text-center gap-5"}>
+            {/*Displays days of the week*/}
             {days.map((day: string) =>
                 <h4 key={day} className={"text-xl"}>{day}</h4>
             )}
+            {/*Add empty spaces in the grid to align the date under correct day*/}
             {Array.from({length: gridSpace}).map((_, i) => (
                 <div key={i}></div>
             ))}
+            {/*Displays all dates in the current month*/}
             {dateInMonth.map((dateItem: number) => {
                 const [isSelectedDay, isValidDay] = getStateOfDay(dateItem);
 

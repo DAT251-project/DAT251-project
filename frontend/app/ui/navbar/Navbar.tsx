@@ -8,7 +8,6 @@ import {useState} from "react";
 import clsx from "clsx";
 import {usePathname} from "next/navigation";
 import NavLink from "@/app/ui/navbar/NavLink";
-import { refresh } from 'next/cache'
 
 export type NavLinkProps = {
     href: string,
@@ -38,10 +37,14 @@ const navLinks: NavLinkProps[] = [
     },
 ]
 
+/**
+ * Navbar for the customer page, is not included on staff pages
+ */
 export default function Navbar(){
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
 
+    // Used to close nav link automatically when clicked on mobile menu
     const handleNavLinkClick = () => {
         setIsOpen(false);
     }

@@ -18,8 +18,8 @@ export default function Page () {
         register, handleSubmit, watch, control, formState: { errors },
     } = useForm<BookingSchemaType>({
         resolver: zodResolver(bookingSchema),
-        shouldUnregister: false,
         defaultValues:{
+            id: "",
             numberGuest: 0,
             date: "",
             time: "",
@@ -34,6 +34,7 @@ export default function Page () {
         mutate(data);
     }
 
+    // Multistep form, renders one section at a time based on schemaSection
     return (<section className={"bg-custom-eggwhite h-full"}>
        <Container style={"flex flex-col items-center px-5 py-20 2xl:py-30 gap-9"}>
            <form onSubmit={handleSubmit(onSubmit)} className={"max-w-100 w-full"}>
@@ -61,6 +62,7 @@ export default function Page () {
                                            errors={errors}
                                            watch={watch}
                                            setSchemaSelection={setSchemaSection}/>
+                       {/*Submit button only visible in final step*/}
                        <div className={"flex justify-center"}>
                            <button type="submit"
                                    className={"bg-black text-lg text-white w-fit py-2 px-8 rounded-3xl border-2 hover:bg-inherit hover:text-black"}>

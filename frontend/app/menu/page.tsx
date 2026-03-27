@@ -12,6 +12,7 @@ export default function Page () {
                     <a href={"/menu/takeaway-2025.pdf"} className={"default-btn bg-custom-red border-custom-red text-white hover:bg-custom-eggwhite hover:text-custom-red"}>Takeaway</a>
                 </div>
             </Container>
+            {/*Decorative background illustrations*/}
             <Image src={"/drawings/noodles.png"} width={200} height={300}
                    className={"absolute z-1 opacity-70 bottom-0 left-0 w-40 md:w-50 lg:w-50 2xl:w-70 h-auto"}
                    alt={"hand drawing of asian noodles dish."}/>

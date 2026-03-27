@@ -3,6 +3,9 @@ import {BookingSchemaType} from "@/app/booking/FormTypes";
 import axios from "axios";
 import {useRouter} from "next/navigation";
 
+/**
+ * Custom hook to submit Booking form data to backend and change to confirmation page
+ */
 export default function useBookingSubmit() {
     const router = useRouter();
 

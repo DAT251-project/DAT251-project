@@ -4,6 +4,13 @@ import {ArrowLeftIcon} from "@heroicons/react/24/outline";
 import {FieldErrors, UseFormWatch, UseFormRegister} from "react-hook-form";
 import {BookingSchemaType} from "@/app/booking/FormTypes";
 
+/**
+ * Last step of the booking form where user fills in contact information
+ * @param register - React hook form register function for input binding
+ * @param errors - validation errors to display field error messages
+ * @param watch - watches and returns field values
+ * @param setSchemaSelection - callback to navigate between form steps
+ */
 export default function ContactDetailsForm({register, errors, watch, setSchemaSelection}:
    {
        register:UseFormRegister<BookingSchemaType>,
@@ -17,6 +24,7 @@ export default function ContactDetailsForm({register, errors, watch, setSchemaSe
 
     return (
         <section className={"flex flex-col gap-5"}>
+            {/*Summary of chosen guests, date and time*/}
             <h2 className={"text-xl text-custom-gray text-center"}>{chosenNumberGuest} personer</h2>
             <h2 className={"text-xl text-custom-gray text-center"}>{chosenFullDate}, kl. {chosenTime}</h2>
             <h3 className={"text-2xl text-center font-title"}>Fyll ut kontaktinformasjon</h3>
@@ -42,7 +50,13 @@ export default function ContactDetailsForm({register, errors, watch, setSchemaSe
                 </div>
                 <div className={"flex flex-col gap-2"}>
                     <label htmlFor={"comment"} className={"text-gray-500"}>Kommentar</label>
-                    <textarea rows={4} className={"border p-2 rounded-md"} id={"comment"} {...register("comment")}/>
+                    <textarea rows={4}
+                              className={"border p-2 rounded-md"}
+                              id={"comment"}
+                              {...register("comment")}
+                              aria-describedby={"comment-error"}
+                              aria-required={false}/>
+                    {errors?.comment && <span id={"comment-error"} className={"text-red-800"}>{errors.comment.message}</span>}
                 </div>
             </section>
             <div className={"flex justify-between py-3"}>

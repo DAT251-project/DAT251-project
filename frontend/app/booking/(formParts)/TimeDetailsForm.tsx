@@ -6,6 +6,13 @@ import {ArrowLeftIcon} from "@heroicons/react/24/outline";
 import {BookingSchemaType, TimeSlotExtendedType} from "@/app/booking/FormTypes";
 import {useTimeSlots} from "@/app/hooks/useTimeSlots";
 
+/**
+ * Third step of the booking form where user choose the time of booking
+ * @param control - React hook form object to work with controlled components
+ * @param errors - validation errors to display field error messages
+ * @param watch - watches and returns field values
+ * @param setSchemaSelection - callback to navigate between form steps
+ */
 export default function TimeDetailsForm({control, errors, watch, setSchemaSelection}:
     {
         control:Control<BookingSchemaType>,
@@ -24,6 +31,8 @@ export default function TimeDetailsForm({control, errors, watch, setSchemaSelect
         field.onChange(timeSlot);
         setSchemaSelection("CONTACT")
     }
+
+    console.log(timeSlotsExtended);
 
     return (
         <section className={"flex flex-col gap-5"}>

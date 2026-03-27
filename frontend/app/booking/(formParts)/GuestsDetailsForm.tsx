@@ -5,9 +5,18 @@ import React, {useState} from "react";
 import {SchemaSections} from "@/app/booking/page";
 import {BookingSchemaType} from "@/app/booking/FormTypes";
 
-export const maxNumberGuest = 5;
+// Max number of guests in bookings
+export const maxNumberGuest = 6;
+// Generates a list from 1 to max number, used to display all options
 const guestsList: number[] = Array.from({length: maxNumberGuest}, (_, index) => index + 1);
 
+/**
+ * First step of the booking form where user choose how many people will be in the booking
+ * @param control - React hook form object to work with controlled components
+ * @param errors - validation errors to display field error messages
+ * @param watch - watches and returns field values
+ * @param setSchemaSelection - callback to navigate between form steps
+ */
 export default function GuestsDetailsForm({control, errors, watch, setSchemaSelection}:
     {
         control:Control<BookingSchemaType>,
@@ -19,6 +28,8 @@ export default function GuestsDetailsForm({control, errors, watch, setSchemaSele
     const {field} = useController({name: "numberGuest", control})
     const chosenNumberGuest = watch("numberGuest");
 
+    // Handles correct and incorrect number of guests,
+    // shows contact message if max guests is selected instead of advancing to next step
     const handleBtnClick = (value: number) => {
         field.onChange(value);
         if (value === maxNumberGuest){
@@ -38,8 +49,9 @@ export default function GuestsDetailsForm({control, errors, watch, setSchemaSele
                    aria-controls={"number-of-guests"}
                    aria-describedby={"number-of-guests-error"}
                    className={"sr-only"}/>
-            <div role={"group"} id="number-of-guests" aria-label={"number of guests buttons"} className={"grid grid-cols-4 gap-3"}>
+            <div role={"group"} id="number-of-guests" aria-label={"number of guests buttons"} className={"grid grid-cols-5 gap-3"}>
                 {guestsList.map((numb: number, index:number) => {
+                    // Last button have '+' to indicate max guests or more
                     const buttonText: string = numb !== maxNumberGuest ? numb.toString() : numb.toString() + "+"
                     const lastbtn: boolean = numb === maxNumberGuest
 

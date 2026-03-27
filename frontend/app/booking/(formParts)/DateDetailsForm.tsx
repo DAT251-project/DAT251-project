@@ -8,9 +8,17 @@ import {getMonthToString} from "@/app/utils/utils";
 import FormCalendar from "@/app/booking/(formParts)/FormCalendarDays";
 
 let date: Date = new Date();
+// Used to restrict how long time in advance one can create a booking
 const maxFutureMonth = 2;
 let maxMonth:number = (date.getMonth() + maxFutureMonth + 1) % 12
 
+/**
+ * Second step of the booking form where user choose the date of booking
+ * @param control - React hook form object to work with controlled components
+ * @param errors - validation errors to display field error messages
+ * @param watch - watches and returns field values
+ * @param setSchemaSelection - callback to navigate between form steps
+ */
 export default function DateDetailsForm({control, errors, watch, setSchemaSelection}:
     {
         control:Control<BookingSchemaType>,
@@ -22,20 +30,21 @@ export default function DateDetailsForm({control, errors, watch, setSchemaSelect
     const chosenNumberGuest = watch("numberGuest");
     const chosenFullDate = watch("date");
 
-    // used to deactivate/activate calendar buttons
+    // Used to deactivate/activate calendar buttons
     const [prevMonth, setPrevMonth] = useState(false)
     const [nextMonth, setNextMonth] = useState(false)
 
     const todaysDate = new Date();
 
+    // Decides if it's possible to go back and forth in the calendar without user interaction
     const updateCalendarBtn = () => {
-        // prevent going back in time
+        // Prevent going back in time
         if (todaysDate.getMonth() < date.getMonth()) {
             setPrevMonth(true)
         } else {
             setPrevMonth(false)
         }
-        // prevent going past max month
+        // Prevent going past max month
         if (maxMonth !== (date.getMonth() + 1)){
             setNextMonth(true)
         } else {
@@ -43,18 +52,21 @@ export default function DateDetailsForm({control, errors, watch, setSchemaSelect
         }
     }
 
+    // Decides if it's possible to go back and forth in the calendar
+    // after user clicks on the navigation buttons
     const handleBtnClick = (direction:string) => {
-        // prevent going back in time
+        // Prevent going back in time
         if (direction === "PREV" && todaysDate < date){
             date.setMonth(date.getMonth() - 1);
         }
-        // enforce maximum days ahead a customer can book table
+        // Enforce maximum days ahead a customer can book table
         if (direction === "NEXT" && maxMonth !== (date.getMonth() + 1)){
             date.setMonth(date.getMonth() + 1);
         }
         updateCalendarBtn()
     }
 
+    // Stores date in correct format (YYYY-MM-DD) and advances to next step
     const handleSelectDate = (dateValue: number) => {
         let month = date.getMonth() + 1;
         let monthString: string = "";

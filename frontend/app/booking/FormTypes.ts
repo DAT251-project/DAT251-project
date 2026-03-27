@@ -20,12 +20,13 @@ import {z} from "zod";
 import {maxNumberGuest} from "@/app/booking/(formParts)/GuestsDetailsForm";
 
 export const bookingSchema = z.object({
+    id: z.string(),
     numberGuest: z.number().min(1, "Minimum 1 guest").max(maxNumberGuest, `Maximum ${maxNumberGuest}`),
     time: z.string(),
     date: z.string(),
     email: z.email(),
     phoneNumber: z.string(),
-    comment: z.string().optional()
+    comment: z.string().max(255, "Kommentar kan ikke være mer enn 255 karakterer").optional()
 })
 
 export type BookingSchemaType = z.infer<typeof bookingSchema>

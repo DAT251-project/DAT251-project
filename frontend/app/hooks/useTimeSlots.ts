@@ -4,14 +4,22 @@ import axios from "axios";
 import {isPastTime} from "@/app/utils/utils";
 import {TimeSlotExtendedType, TimeSlotRequestType, TimeSlotType} from "@/app/booking/FormTypes";
 
+/**
+ * Custom hook to get restaurant time slots
+ * @param chosenNumberGuest - number of guests in the booking
+ * @param chosenFullDate - date of the booking
+ * @return list of time slots including time, availability and if it's past current time
+ */
 export function useTimeSlots(chosenNumberGuest: number, chosenFullDate: string){
     const mutation = useMutation({
-        mutationFn: (timeSlotRequestData: TimeSlotRequestType) => {
-            return axios.post(`http://localhost:8080/booking/timeslot`, timeSlotRequestData);
+        mutationFn: async (timeSlotRequestData: TimeSlotRequestType) => {
+            const response = await axios.post(`http://localhost:8080/booking/timeslot`, timeSlotRequestData);
+            console.log(response.data);
+            return response.data;
         }
     })
 
-    const timeSlotsExtended: TimeSlotExtendedType[] = mutation.data?.data.map((prev: TimeSlotType)=> ({
+    const timeSlotsExtended: TimeSlotExtendedType[] = mutation.data?.map((prev: TimeSlotType)=> ({
         ...prev,
         time: prev.time.slice(0, -3),
         pastTime: isPastTime(prev.time, chosenFullDate)

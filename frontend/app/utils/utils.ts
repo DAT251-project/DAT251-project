@@ -1,7 +1,19 @@
+/**
+ * Converts given date into month in full text
+ * @param date - date to be used
+ * @return String - month (ex. March)
+ */
 export function getMonthToString(date: Date){
     return date.toLocaleDateString("no-NO", {month: "long"});
 }
 
+/**
+ * Checks if given time and date is valid to book.
+ * Users must book minimum 2 hours ahead of the booking time
+ * @param time - time to check
+ * @param chosenFullDate - date to check
+ * @return Boolean
+ */
 export function isPastTime(time: string, chosenFullDate: string): boolean {
     const todaysDate = new Date();
 
