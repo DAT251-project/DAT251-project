@@ -1,5 +1,6 @@
 package org.example.dat251project.services;
 
+import org.example.dat251project.dtos.BookingDTO;
 import org.example.dat251project.dtos.TimeSlotDTO;
 import org.example.dat251project.models.Booking;
 import org.example.dat251project.models.Restaurant;
@@ -234,11 +235,12 @@ public class TestBookingSystem {
         bookings.add(booking1);
         bookings.add(booking2);
 
-        Mockito.when(bookingService.findByDateAndTime(date, time1))
+        Mockito.when(bookingService.findAllByDateAndTime(date, time1))
                 .thenReturn(bookings);
 
         List<BookingDTO> result = bookingSystem.getBookingByDataAndTime(date, time1);
-        System.out.println();
         assertEquals(2, result.size());
+        assertEquals("alice@gmail.com", result.getFirst().getEmail());
+
     }
 }
