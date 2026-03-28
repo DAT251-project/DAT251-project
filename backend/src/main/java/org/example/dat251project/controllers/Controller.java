@@ -6,7 +6,6 @@ import org.example.dat251project.dtos.TimeSlotDTO;
 import org.example.dat251project.dtos.TimeSlotRequestDTO;
 import org.example.dat251project.models.Booking;
 import org.example.dat251project.models.Tables;
-import org.example.dat251project.repositories.BookingRepository;
 import org.example.dat251project.services.BookingService;
 import org.example.dat251project.services.BookingSystem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +74,6 @@ public class Controller {
     public ResponseEntity<List<TimeSlotDTO>> getAvailableTimeSlot(@RequestBody TimeSlotRequestDTO timeSlotRequestDTO) {
         List<TimeSlotDTO> timeSlotDTO = bookingSystem.getAvailabilityForDate(timeSlotRequestDTO.getDate(),
                 timeSlotRequestDTO.getNumGuests());
-        System.out.println(timeSlotDTO);
         return ResponseEntity.ok().body(timeSlotDTO);
     }
 
