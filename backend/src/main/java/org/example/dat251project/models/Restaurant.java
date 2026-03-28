@@ -20,6 +20,8 @@ public class Restaurant {
     public static final int MAXGROUPSIZE = 6;
     public static final int SMALLTABLEMAX = 2;
     public static final int BIGTABLEMAX = 4;
+    // A bookings duration in hours
+    public static final int BOOKINGDURATION = 2;
     @Id
     @NotNull
     private String name;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
-    List<Booking> findByDateAndTime(LocalDate date, LocalTime time);
+    List<Booking> findByDateAndTimeBetween(LocalDate date, LocalTime start, LocalTime end);
 
     @Query("SELECT b from Booking b WHERE b.time >= :t AND b.date = :d")
     List<Booking> findAllByDateAndTime(@Param("d") LocalDate date, @Param("t") LocalTime time);
