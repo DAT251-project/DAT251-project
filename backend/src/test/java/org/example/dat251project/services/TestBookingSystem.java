@@ -17,7 +17,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,7 +64,9 @@ public class TestBookingSystem {
     }
 
     private void mockBooking(LocalDate date, LocalTime time, int numGuests, List<Tables> bookedTables) {
-        Mockito.when(bookingService.findByDateAndTime(date, time))
+        LocalTime startTime = time.minusHours(2);
+        LocalTime endTime = time.plusHours(2);
+        Mockito.when(bookingService.findByDateAndTimeBetween(date, startTime, endTime))
                 .thenReturn(List.of(
                         new Booking(email, phoneNumber, numGuests, time, date, "", bookedTables)
                 ));
@@ -110,7 +115,9 @@ public class TestBookingSystem {
         int numGuests = 2;
         // Mock the availability
         for (LocalTime timeslot : restaurant.getTimeSlots()) {
-            Mockito.when(bookingService.findByDateAndTime(date, timeslot))
+            LocalTime startWindow = timeslot.minusHours(2);
+            LocalTime endWindow = timeslot.plusHours(2);
+            Mockito.when(bookingService.findByDateAndTimeBetween(date, startWindow, endWindow))
                     .thenReturn(new ArrayList<>()); // No bookings yet, all tables free
         }
         List<TimeSlotDTO> availableTime = bookingSystem.getAvailabilityForDate(date, numGuests);

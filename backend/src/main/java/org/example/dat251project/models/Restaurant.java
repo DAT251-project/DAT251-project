@@ -17,9 +17,11 @@ import java.util.*;
 @Entity
 @Table
 public class Restaurant {
-    public static final int MAXGROUPSIZE = 7;
+    public static final int MAXGROUPSIZE = 6;
     public static final int SMALLTABLEMAX = 2;
     public static final int BIGTABLEMAX = 4;
+    // A bookings duration in hours
+    public static final int BOOKINGDURATION = 2;
     @Id
     @NotNull
     private String name;
@@ -90,11 +92,29 @@ public class Restaurant {
         if (tables != null) {
             this.smallTables = divideTableSize(tables, 1, 2);
             this.bigTables = divideTableSize(tables, 3, 4);
+            this.combination = createCombo(tables);
         } else {
             this.smallTables = new ArrayList<>();
             this.bigTables = new ArrayList<>();
+            this.combination = new HashMap<>();
         }
-        if (combination == null) combination = new HashMap<>();
+    }
+
+    /**
+     * Create table combinations. This is based on the layout of Sze Chuan House
+     *
+     * @param tables
+     * @return
+     */
+    private HashMap<Tables, List<Tables>> createCombo(List<Tables> tables) {
+        HashMap<Tables, List<Tables>> combo = new HashMap<>();
+        Tables t1 = tables.get(0);
+        Tables t2 = tables.get(1);
+        Tables t3 = tables.get(2);
+        Tables t4 = tables.get(3);
+        combo.put(t2, new ArrayList<>(Arrays.asList(t1, t3)));
+        combo.put(t3, new ArrayList<>(List.of(t4)));
+        return combo;
     }
 
     /**
@@ -169,6 +189,7 @@ public class Restaurant {
 
                         if (waste >= 0 && waste < bestWaste && combinationImpact < bestComboImpact) {
                             bestWaste = waste;
+                            bestComboImpact = combinationImpact;
                             bestComboTable = new ArrayList<>();
                             bestComboTable.add(key);
                             bestComboTable.add(table2);

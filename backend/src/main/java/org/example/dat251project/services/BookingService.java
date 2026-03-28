@@ -30,8 +30,8 @@ public class BookingService {
         return bookingRepo.save(booking);
     }
 
-    public List<Booking> findByDateAndTime(LocalDate date, LocalTime time) {
-        return bookingRepo.findByDateAndTime(date, time);
+    public List<Booking> findByDateAndTimeBetween(LocalDate date, LocalTime start, LocalTime end) {
+        return bookingRepo.findByDateAndTimeBetween(date, start, end);
     }
 
     public List<Booking> findAllByDateAndTime(LocalDate date, LocalTime time) {

@@ -111,11 +111,26 @@ public class BookingSystem {
         return null;
     }
 
+    /**
+     * Get all tables that are occupied given a date and time.
+     * It takes into account the duration of a booking, ensuring that no bookings can occur during a booked tables timeframe.
+     *
+     * @param date
+     * @param time
+     * @return
+     */
     private Set<Tables> getOccupiedTables(LocalDate date, LocalTime time) {
         HashSet<Tables> occupiedTables = new HashSet<>();
-        List<Booking> bookings = bookingService.findByDateAndTime(date, time);
+        LocalTime startWindow = time.minusHours(restaurant.BOOKINGDURATION);
+        LocalTime endWindow = time.plusHours(restaurant.BOOKINGDURATION);
+        List<Booking> bookings = bookingService.findByDateAndTimeBetween(date, startWindow, endWindow);
         for (Booking b : bookings) {
-            occupiedTables.addAll(b.getTables());
+            LocalTime startTime = b.getTime();
+            LocalTime endTime = startTime.plusHours(restaurant.BOOKINGDURATION);
+            // Starting time before the ending window and also doesn't end after the starting window
+            if (startTime.isBefore(endWindow) && endTime.isAfter(startWindow)) {
+                occupiedTables.addAll(b.getTables());
+            }
         }
         return occupiedTables;
     }

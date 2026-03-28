@@ -20,6 +20,9 @@ function cleanName(file: string) {
     return cleanedName.charAt(0).toUpperCase() + cleanedName.slice(1);
 }
 
+/**
+ * Shows a carousel of dish images of the restaurant
+ */
 export default function Carousel() {
     const [dishIndex, setDishIndex] = useState(0);
     const width = useWindowWidth();
