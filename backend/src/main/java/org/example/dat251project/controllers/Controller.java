@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public class Controller {
     }
 
     @Operation(summary = "Create a new Booking")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "201", useReturnTypeSchema = true)
     @PostMapping("booking")
     public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
         List<Tables> bookedTables = bookingSystem.findAvailableTables(bookingDTO.getDate(), bookingDTO.getTime(), bookingDTO.getNumberGuest());
@@ -51,7 +52,8 @@ public class Controller {
                         .date(booking.getDate())
                         .comment(booking.getComment())
                         .build();
-                return ResponseEntity.ok().body(bookingResponseDTO);
+                URI location = URI.create("/booking/" + booking.getId());
+                return ResponseEntity.created(location).body(bookingResponseDTO);
             }
         }
         return ResponseEntity.badRequest().build();
