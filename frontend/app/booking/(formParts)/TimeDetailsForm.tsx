@@ -39,7 +39,6 @@ export default function TimeDetailsForm({control, errors, watch, setSchemaSelect
             <label htmlFor="timeSlot" className={"text-2xl text-center font-title"}>Velg tid</label>
                     <input type={"text"}
                            id={"timeSlot"}
-                           aria-label={"choose time of booking"}
                            aria-controls={"time-group"}
                            aria-describedby={"time-error"}
                            className={"sr-only"}/>
@@ -49,23 +48,29 @@ export default function TimeDetailsForm({control, errors, watch, setSchemaSelect
                             onClick={()=> handleTime(timeSlot.time)}
                             disabled={!timeSlot.available || timeSlot.pastTime}
                             aria-pressed={chosenTime === timeSlot.time}
-                            aria-disabled={timeSlot.available}
+                            aria-disabled={!timeSlot.available}
                             className={clsx(
                                 "relative border-2 border-gray-300 py-2 rounded-md text-xl",
                                 { "text-custom-green hover:bg-gray-300 transition-colors": timeSlot.available && !timeSlot.pastTime},
                                 {"text-gray-400": timeSlot.pastTime}
                             )}>
-                        <p>{timeSlot.time}</p>
+                        <span>{timeSlot.time}</span>
+                        {timeSlot.pastTime && <span className={"sr-only"}>Ikke tilgjenglig fordi tiden er passert eller det er mindre enn 2 timer før</span>}
                         {(!timeSlot.available && !timeSlot.pastTime) &&
-                            <div className={"bg-red-400 w-2 h-2 absolute right-1 top-1 rounded-full"}></div>}
+                            <>
+                                <div className={"bg-red-400 w-2 h-2 absolute right-1 top-1 rounded-full"}></div>
+                                <span className={"sr-only"}>Ikke tilgjengelig fordi booking er fullt</span>
+                            </>
+                        }
                     </button>)
                 )}
             </div>
             {errors.time && <span id={"time-error"} className={"text-red-800"}>{errors.time.message}</span>}
-            <button
+            <button type={"button"}
+                aria-label={"Go back to choosing date of booking"}
                 onClick={() => setSchemaSelection("DATE")}
                 className={"p-2 border-2 rounded-full w-fit scale-90 hover:scale-100 transition-all"}>
-                <ArrowLeftIcon className={"w-8 h-8"}/>
+                <ArrowLeftIcon className={"w-8 h-8"} aria-hidden={true}/>
             </button>
         </section>
     )

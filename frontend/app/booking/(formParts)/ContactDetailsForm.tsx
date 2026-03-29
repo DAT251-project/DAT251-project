@@ -23,7 +23,7 @@ export default function ContactDetailsForm({register, errors, watch, setSchemaSe
     const chosenFullDate = watch("date");
     const chosenTime = watch("time");
 
-    const countryCodeList: CountryCode[] = getCountries() || [];
+    const COUNTRY_CODE_LIST: CountryCode[] = getCountries() || [];
 
     return (
         <section className={"flex flex-col gap-5"}>
@@ -50,7 +50,7 @@ export default function ContactDetailsForm({register, errors, watch, setSchemaSe
                                 aria-label={"country code for telephone numbers"}
                                 aria-describedby={"phone-number-error"}
                         >
-                            {countryCodeList.map((country:CountryCode)=>
+                            {COUNTRY_CODE_LIST.map((country:CountryCode)=>
                                 <option key={country}>{country}</option>
                             )}
                         </select>
@@ -75,10 +75,11 @@ export default function ContactDetailsForm({register, errors, watch, setSchemaSe
                 </div>
             </section>
             <div className={"flex justify-between py-3"}>
-                <button
+                <button type={"button"}
+                    aria-label={"Go back to choosing time of booking"}
                     onClick={() => setSchemaSelection("TIME")}
                     className={"p-2 border-2 rounded-full w-fit scale-90 hover:scale-100 transition-all"}>
-                    <ArrowLeftIcon className={"w-8 h-8"}/>
+                    <ArrowLeftIcon className={"w-8 h-8"} aria-hidden={true}/>
                 </button>
             </div>
         </section>
