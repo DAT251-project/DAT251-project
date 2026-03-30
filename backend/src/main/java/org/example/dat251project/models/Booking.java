@@ -18,7 +18,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table
+@jakarta.persistence.Table
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,9 +40,9 @@ public class Booking {
 
     @ManyToMany
     @JoinTable(name = "booking_tables")
-    private List<Tables> tables;
+    private List<Table> tables;
 
-    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, LocalDate date, String comment, List<Tables> tables) {
+    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, LocalDate date, String comment, List<Table> tables) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.numberGuest = numberGuest;

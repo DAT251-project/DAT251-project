@@ -10,7 +10,7 @@ import org.example.dat251project.dtos.BookingResponseDTO;
 import org.example.dat251project.dtos.TimeSlotDTO;
 import org.example.dat251project.dtos.TimeSlotRequestDTO;
 import org.example.dat251project.models.Booking;
-import org.example.dat251project.models.Tables;
+import org.example.dat251project.models.Table;
 import org.example.dat251project.services.BookingSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class Controller {
     @ApiResponse(responseCode = "201", useReturnTypeSchema = true)
     @PostMapping("booking")
     public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
-        List<Tables> bookedTables = bookingSystem.findAvailableTables(bookingDTO.getDate(), bookingDTO.getTime(), bookingDTO.getNumberGuest());
+        List<Table> bookedTables = bookingSystem.findAvailableTables(bookingDTO.getDate(), bookingDTO.getTime(), bookingDTO.getNumberGuest());
         if (!bookedTables.isEmpty()) {
             Booking booking = bookingSystem.createBooking(bookingDTO, bookedTables);
             if (booking != null) {

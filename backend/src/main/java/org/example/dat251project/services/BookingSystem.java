@@ -12,7 +12,7 @@ import org.example.dat251project.dtos.BookingDTO;
 import org.example.dat251project.dtos.TimeSlotDTO;
 import org.example.dat251project.models.Booking;
 import org.example.dat251project.models.Restaurant;
-import org.example.dat251project.models.Tables;
+import org.example.dat251project.models.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +81,7 @@ public class BookingSystem {
      * @return true if there is a table available, false otherwise
      */
     private boolean checkAvailability(LocalDate date, LocalTime time, int numGuests) {
-        List<Tables> possibleTables = findAvailableTables(date, time, numGuests);
+        List<Table> possibleTables = findAvailableTables(date, time, numGuests);
         return !possibleTables.isEmpty();
 
     }
@@ -98,7 +98,7 @@ public class BookingSystem {
         return availabilityList;
     }
 
-    public Booking createBooking(BookingDTO bookingDTO, List<Tables> tables) {
+    public Booking createBooking(BookingDTO bookingDTO, List<Table> tables) {
         Booking booking = bookingService.createBooking(bookingDTO, tables);
         if (booking != null) {
             try {
@@ -119,8 +119,8 @@ public class BookingSystem {
      * @param time
      * @return
      */
-    private Set<Tables> getOccupiedTables(LocalDate date, LocalTime time) {
-        HashSet<Tables> occupiedTables = new HashSet<>();
+    private Set<Table> getOccupiedTables(LocalDate date, LocalTime time) {
+        HashSet<Table> occupiedTables = new HashSet<>();
         LocalTime startWindow = time.minusHours(restaurant.BOOKINGDURATION);
         LocalTime endWindow = time.plusHours(restaurant.BOOKINGDURATION);
         List<Booking> bookings = bookingService.findByDateAndTimeBetween(date, startWindow, endWindow);
@@ -137,31 +137,23 @@ public class BookingSystem {
 
 
     //algorithm part
-    public List<Tables> findAvailableTables(LocalDate date, LocalTime time, int numGuests) {
-        List<Tables> nonAvailable = new ArrayList<>();
-        Set<Tables> occupiedTables = getOccupiedTables(date, time);
+    public List<Table> findAvailableTables(LocalDate date, LocalTime time, int numGuests) {
+        List<Table> nonAvailable = new ArrayList<>();
+        Set<Table> occupiedTables = getOccupiedTables(date, time);
         List<TableSelectionAlgorithm> strategies = List.of(
                 new SmallTableAlgorithm(),
                 new BigTableAlgorithm(),
                 new ComboTableAlgorithm()
         );
-        if (numGuests > restaurant.MAXGROUPSIZE) return nonAvailable;
+        if (numGuests > restaurant.MAX_GROUP_SIZE) return nonAvailable;
         for (TableSelectionAlgorithm algorithm : strategies) {
-            List<Tables> bestTables = algorithm.findTables(restaurant, occupiedTables, numGuests);
+            List<Table> bestTables = algorithm.findTables(restaurant, occupiedTables, numGuests);
             if (!bestTables.isEmpty()) {
                 return bestTables;
             }
         }
         // Will only return if there are no tables available
         return nonAvailable;
-    }
-
-    public List<String> getTableNames(List<Tables> tables) {
-        ArrayList<String> tableNames = new ArrayList<>();
-        for (Tables t : tables) {
-            tableNames.add(t.getName());
-        }
-        return tableNames;
     }
 
     public Booking getBookingById(UUID id) {

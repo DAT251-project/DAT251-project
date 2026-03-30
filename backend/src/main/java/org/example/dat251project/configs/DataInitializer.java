@@ -2,7 +2,7 @@ package org.example.dat251project.configs;
 
 import jakarta.transaction.Transactional;
 import org.example.dat251project.models.Restaurant;
-import org.example.dat251project.models.Tables;
+import org.example.dat251project.models.Table;
 import org.example.dat251project.repositories.RestaurantRepository;
 import org.example.dat251project.repositories.UserRepository;
 import org.example.dat251project.services.BookingSystem;
@@ -44,7 +44,7 @@ public class DataInitializer {
                 );
                 HashSet<DayOfWeek> closedDays = new HashSet<>();
                 closedDays.add(DayOfWeek.MONDAY);
-                List<Tables> tables = createTables();
+                List<Table> tables = createTables();
                 Restaurant res = restaurantService.createRestaurant(
                         "Sze Chuan House", "Nedre Korskirkeallmenningen 9",
                         55313690, 20, opHours, 30, closedDays,
@@ -58,14 +58,14 @@ public class DataInitializer {
         };
     }
 
-    private List<Tables> createTables() {
-        List<Tables> restTables = new ArrayList<>();
-        Tables t1 = new Tables("T1", 4);
-        Tables t2 = new Tables("T2", 2);
-        Tables t3 = new Tables("T3", 4);
-        Tables t4 = new Tables("T4", 2);
-        Tables t5 = new Tables("T5", 4);
-        Tables t6 = new Tables("T6", 4);
+    private List<Table> createTables() {
+        List<Table> restTables = new ArrayList<>();
+        Table t1 = new Table("T1", 4);
+        Table t2 = new Table("T2", 2);
+        Table t3 = new Table("T3", 4);
+        Table t4 = new Table("T4", 2);
+        Table t5 = new Table("T5", 4);
+        Table t6 = new Table("T6", 4);
         restTables.add(t1);
         restTables.add(t2);
         restTables.add(t3);
