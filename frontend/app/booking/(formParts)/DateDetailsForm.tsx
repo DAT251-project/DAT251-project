@@ -57,10 +57,12 @@ export default function DateDetailsForm({control, errors, watch, setSchemaSelect
     const handleBtnClick = (direction:string) => {
         // Prevent going back in time
         if (direction === "PREV" && todaysDate < date){
+            date.setDate(1); // to avoid overflow which skips a month
             date.setMonth(date.getMonth() - 1);
         }
         // Enforce maximum days ahead a customer can book table
         if (direction === "NEXT" && MAX_MONTH !== (date.getMonth() + 1)){
+            date.setDate(1);
             date.setMonth(date.getMonth() + 1);
         }
         updateCalendarBtn()
