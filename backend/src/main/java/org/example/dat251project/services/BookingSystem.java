@@ -110,7 +110,7 @@ public class BookingSystem {
         List<TimeSlotDTO> availabilityList = new ArrayList<>();
         // If current date, then have to ensure that all timeslots passed the current time is true
         if (Objects.equals(date, LocalDate.now())) {
-            LocalTime currTime = LocalTime.now();
+            LocalTime currTime = LocalTime.now().plusHours(restaurant.BOOKINGDURATION);
             for (LocalTime timeslot : restaurant.getTimeSlots()) {
                 if (timeslot.isAfter(currTime)) {
                     availabilityList.add(TimeSlotDTO.builder()
