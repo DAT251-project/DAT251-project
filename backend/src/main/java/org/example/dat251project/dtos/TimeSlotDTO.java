@@ -18,5 +18,6 @@ public class TimeSlotDTO {
     private LocalTime time;
     @Schema(description = "Whether the timeslot is available or not", example = "true")
     private Boolean available;
-
+    @Schema(description = "Whether the timeslot has passed the current time of booking or not", example = "false")
+    private Boolean pastTime;
 }
