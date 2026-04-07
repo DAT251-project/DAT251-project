@@ -218,6 +218,20 @@ public class BookingSystem {
     }
 
     /**
+     * Deletes a booking with given id
+     * @param id of booking
+     * @return True upon successful deletion, otherwise false
+     */
+    public boolean deleteBookingById(UUID id){
+        Optional<Booking> existingBooking = bookingService.bookingRepo.findById(id);
+        if (existingBooking.isPresent()){
+            bookingService.bookingRepo.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Get all {@link Booking booking} that are in that date and past {@link LocalTime time}
      * This also includes booking taking place at {@link LocalTime time}
      *

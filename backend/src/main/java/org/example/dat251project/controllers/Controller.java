@@ -92,6 +92,24 @@ public class Controller {
         return ResponseEntity.ok().body(bookingResponseDTO);
     }
 
+    @Operation(summary = "Delete a specific booking by their booking id")
+    @ApiResponse(responseCode = "204", description = "Successfully deleted booking with the given id")
+    @ApiResponse(responseCode = "404", description = "Unsuccessful deletion because booking does not exists")
+    @DeleteMapping("booking/{id}")
+    public ResponseEntity<String> deleteBooking(
+            @Parameter(
+                    description = "ID of the booking",
+                    example = "c3f559eb-1bc8-44dd-bb06-294e567da010"
+            )
+            @PathVariable UUID id){
+        boolean isDeleted = bookingSystem.deleteBookingById(id);
+
+        if (isDeleted){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @Schema(description = "Get all timeslots that are able to seat the number of guests at a specific date")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
     @PostMapping("booking/timeslot")
@@ -100,5 +118,4 @@ public class Controller {
                 timeSlotRequestDTO.getNumGuests());
         return ResponseEntity.ok().body(timeSlotDTO);
     }
-
 }
