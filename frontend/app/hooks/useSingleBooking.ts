@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import axios from "axios";
-import {BookingSchemaType} from "@/app/booking/FormTypes";
+import {BookingSchemaType} from "@/app/(main)/booking/FormTypes";
 
 /**
  * Custom hook to get a specific booking based on id

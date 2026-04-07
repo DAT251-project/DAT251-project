@@ -1,5 +1,5 @@
 import {useMutation} from "@tanstack/react-query";
-import {BookingRequestType} from "@/app/booking/FormTypes";
+import {BookingRequestType} from "@/app/(main)/booking/FormTypes";
 import axios from "axios";
 import {useRouter} from "next/navigation";
 

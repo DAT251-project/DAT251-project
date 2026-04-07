@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
-import {SchemaSections} from "@/app/booking/page";
+import {SchemaSections} from "@/app/(main)/booking/page";
 import {Control, FieldErrors, useController, UseFormWatch} from "react-hook-form";
 import clsx from "clsx";
 import {ArrowLeftIcon} from "@heroicons/react/24/outline";
-import {BookingSchemaType, TimeSlotExtendedType} from "@/app/booking/FormTypes";
+import {BookingSchemaType, TimeSlotExtendedType} from "@/app/(main)/booking/FormTypes";
 import {useTimeSlots} from "@/app/hooks/useTimeSlots";
 
 /**
