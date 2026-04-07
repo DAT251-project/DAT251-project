@@ -54,6 +54,9 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 
 
+    // Source: https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
+
 }
 
 tasks.withType<Test> {

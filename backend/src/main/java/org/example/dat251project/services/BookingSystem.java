@@ -4,6 +4,10 @@ import jakarta.mail.MessagingException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.dat251project.algorithms.BigTableAlgorithm;
+import org.example.dat251project.algorithms.ComboTableAlgorithm;
+import org.example.dat251project.algorithms.SmallTableAlgorithm;
+import org.example.dat251project.algorithms.TableSelectionAlgorithm;
 import org.example.dat251project.dtos.BookingDTO;
 import org.example.dat251project.dtos.TimeSlotDTO;
 import org.example.dat251project.models.Booking;
@@ -86,9 +90,9 @@ public class BookingSystem {
         List<TimeSlotDTO> availabilityList = new ArrayList<>();
         for (LocalTime timeslot : restaurant.getTimeSlots()) {
             availabilityList.add(TimeSlotDTO.builder()
-                            .time(timeslot)
-                            .available(checkAvailability(date, timeslot, numGuests))
-                            .build());
+                    .time(timeslot)
+                    .available(checkAvailability(date, timeslot, numGuests))
+                    .build());
 
         }
         return availabilityList;
@@ -107,11 +111,26 @@ public class BookingSystem {
         return null;
     }
 
+    /**
+     * Get all tables that are occupied given a date and time.
+     * It takes into account the duration of a booking, ensuring that no bookings can occur during a booked tables timeframe.
+     *
+     * @param date
+     * @param time
+     * @return
+     */
     private Set<Tables> getOccupiedTables(LocalDate date, LocalTime time) {
         HashSet<Tables> occupiedTables = new HashSet<>();
-        List<Booking> bookings = bookingService.findByDateAndTime(date, time);
+        LocalTime startWindow = time.minusHours(restaurant.BOOKINGDURATION);
+        LocalTime endWindow = time.plusHours(restaurant.BOOKINGDURATION);
+        List<Booking> bookings = bookingService.findByDateAndTimeBetween(date, startWindow, endWindow);
         for (Booking b : bookings) {
-            occupiedTables.addAll(b.getTables());
+            LocalTime startTime = b.getTime();
+            LocalTime endTime = startTime.plusHours(restaurant.BOOKINGDURATION);
+            // Starting time before the ending window and also doesn't end after the starting window
+            if (startTime.isBefore(endWindow) && endTime.isAfter(startWindow)) {
+                occupiedTables.addAll(b.getTables());
+            }
         }
         return occupiedTables;
     }
@@ -119,20 +138,22 @@ public class BookingSystem {
 
     //algorithm part
     public List<Tables> findAvailableTables(LocalDate date, LocalTime time, int numGuests) {
-        List<Tables> bestTables = new ArrayList<>();
+        List<Tables> nonAvailable = new ArrayList<>();
         Set<Tables> occupiedTables = getOccupiedTables(date, time);
-
-        if (numGuests > restaurant.MAXGROUPSIZE) return bestTables;
-        if (numGuests <= restaurant.SMALLTABLEMAX) {
-            bestTables = restaurant.findBestSmallTables(occupiedTables, numGuests);
+        List<TableSelectionAlgorithm> strategies = List.of(
+                new SmallTableAlgorithm(),
+                new BigTableAlgorithm(),
+                new ComboTableAlgorithm()
+        );
+        if (numGuests > restaurant.MAXGROUPSIZE) return nonAvailable;
+        for (TableSelectionAlgorithm algorithm : strategies) {
+            List<Tables> bestTables = algorithm.findTables(restaurant, occupiedTables, numGuests);
+            if (!bestTables.isEmpty()) {
+                return bestTables;
+            }
         }
-        if (numGuests <= restaurant.BIGTABLEMAX && bestTables.isEmpty()) {
-            bestTables = restaurant.findBestBigTables(occupiedTables, numGuests);
-        }
-        if (bestTables.isEmpty()) {
-            bestTables = restaurant.findBestComboTables(occupiedTables, numGuests);
-        }
-        return bestTables;
+        // Will only return if there are no tables available
+        return nonAvailable;
     }
 
     public List<String> getTableNames(List<Tables> tables) {
@@ -149,5 +170,33 @@ public class BookingSystem {
             throw new IllegalArgumentException("Cannot find booking with id: " + id.toString());
         }
         return booking;
+    }
+
+    public List<BookingDTO> getBookingByDataAndTime(LocalDate date, LocalTime time) {
+        ArrayList<Booking> list = new ArrayList<>(bookingService.findAllByDateAndTime(date, time));
+        list.sort(Comparator.comparing(Booking::getTime));
+        return convertBookingToDTO(list);
+    }
+
+    /**
+     * Convert Booking to BookingDTO
+     *
+     * @param list List with Booking
+     * @return List with BookingDTO
+     */
+    private List<BookingDTO> convertBookingToDTO(List<Booking> list) {
+        List<BookingDTO> result = new ArrayList<>();
+        for (Booking b : list) {
+            BookingDTO dto = BookingDTO.builder()
+                    .email(b.getEmail())
+                    .phoneNumber(b.getPhoneNumber())
+                    .numberGuest(b.getNumberGuest())
+                    .time(b.getTime())
+                    .date(b.getDate())
+                    .comment(b.getComment())
+                    .build();
+            result.add(dto);
+        }
+        return result;
     }
 }
