@@ -225,8 +225,15 @@ public class BookingSystem {
     public boolean deleteBookingById(UUID id){
         Optional<Booking> existingBooking = bookingService.bookingRepo.findById(id);
         if (existingBooking.isPresent()){
+            Booking booking = existingBooking.get();
             bookingService.bookingRepo.deleteById(id);
-            return true;
+            // send confirmation about successful deletion on email
+            try {
+                emailService.createEmailBookingCancellation(booking);
+                return true;
+            } catch (MessagingException e) {
+                return false;
+            }
         }
         return false;
     }

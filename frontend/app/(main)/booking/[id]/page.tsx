@@ -30,7 +30,7 @@ export default function Page(){
         <Container style={"flex flex-col items-center px-5 py-20 2xl:py-30 gap-9"}>
             {/*Loading animation shown while fetching booking*/}
             <div aria-live={"polite"}>
-                {(isPending || deleteHook.isPending) && <Image src={"/loading.gif"}
+                {isPending && <Image src={"/loading.gif"}
                                      alt={"loading animation while fetching booking"}
                                      width={500} height={240}
                                      unoptimized={true}/>}
