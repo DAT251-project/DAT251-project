@@ -24,13 +24,7 @@ export default function RootLayout({
       <body
         className={`antialiased min-h-dvh grid grid-rows-[auto_1fr_auto]`}
       >
-      <Providers>
-        <Navbar/>
-          <main>
-            {children}
-          </main>
-        <Footer/>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

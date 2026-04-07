@@ -1,14 +1,14 @@
 'use client';
 
 import React, {useState} from "react";
-import {bookingSchema, BookingSchemaType} from "@/app/booking/FormTypes";
+import {bookingSchema, BookingSchemaType} from "@/app/(main)/booking/FormTypes";
 import Container from "@/app/ui/Container";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {SubmitHandler, useForm} from "react-hook-form";
-import GuestsDetailsForm from "@/app/booking/(formParts)/GuestsDetailsForm";
-import DateDetailsForm from "@/app/booking/(formParts)/DateDetailsForm";
-import TimeDetailsForm from "@/app/booking/(formParts)/TimeDetailsForm";
-import ContactDetailsForm from "@/app/booking/(formParts)/ContactDetailsForm";
+import GuestsDetailsForm from "@/app/(main)/booking/(formParts)/GuestsDetailsForm";
+import DateDetailsForm from "@/app/(main)/booking/(formParts)/DateDetailsForm";
+import TimeDetailsForm from "@/app/(main)/booking/(formParts)/TimeDetailsForm";
+import ContactDetailsForm from "@/app/(main)/booking/(formParts)/ContactDetailsForm";
 import useBookingSubmit from "@/app/hooks/useBookingSubmit";
 import {ExclamationTriangleIcon} from "@heroicons/react/16/solid";
 import Image from "next/image";
@@ -53,7 +53,7 @@ export default function Page () {
                {isError &&
                    <div className={"flex flex-col md:flex-row items-center gap-2 text-center md:text-left bg-red-200 border-2 border-red-600 p-3"}>
                        <ExclamationTriangleIcon aria-hidden={true} className={"size-13 sm:size-10"}/>
-                       <p>Det oppstod en feil ved innsending av skjemaet. Vennligst prøv igjen senere eller ring oss på telefon.</p>
+                       <p>Det oppstod en feil ved innsending av skjemaet. Vennligst prÃ¸v igjen senere eller ring oss pÃ¥ telefon.</p>
                    </div>
                }
            </div>

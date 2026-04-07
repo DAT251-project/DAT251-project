@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {MAX_NUMBER_GUEST} from "@/app/booking/(formParts)/GuestsDetailsForm";
+import {MAX_NUMBER_GUEST} from "@/app/(main)/booking/(formParts)/GuestsDetailsForm";
 import {CountryCode, isValidPhoneNumber} from "libphonenumber-js";
 
 const customTimeRegex = /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/;
@@ -17,7 +17,7 @@ export const bookingSchema = z.object({
     email: z.email({message: "Ugyldig email"}),
     countryCode: z.string(),
     phoneNumber: z.string(),
-    comment: z.string().max(255, "Kommentar kan ikke være mer enn 255 karakterer").optional()
+    comment: z.string().max(255, "Kommentar kan ikke vÃ¦re mer enn 255 karakterer").optional()
 }).refine(
     (data) => isValidPhoneNumber(data.phoneNumber, data.countryCode as CountryCode), {
         message: "Ugylig telefonnummer for valgt land",
@@ -50,4 +50,3 @@ export type TimeSlotRequestType = {
     date: string,
     numGuests: number
 }
-

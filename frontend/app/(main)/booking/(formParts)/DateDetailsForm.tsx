@@ -5,7 +5,7 @@ import {ArrowLeftIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import {BookingSchemaType} from "@/app/booking/FormTypes";
 import {getMonthToString} from "@/app/utils/utils";
-import FormCalendar from "@/app/booking/(formParts)/FormCalendarDays";
+import FormCalendar from "@/app/(main)/booking/(formParts)/FormCalendarDays";
 
 let date: Date = new Date();
 // Used to restrict how long time in advance one can create a booking
