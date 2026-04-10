@@ -37,8 +37,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/staff/**").hasAnyAuthority(Role.ADMIN.getAuthority(), Role.STAFF.getAuthority())
                         .requestMatchers("/users/admin/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-                        //TROR VI KAN FJERNE DENNE
-                        .requestMatchers("/api/v1/polls/**").authenticated()
+                        .requestMatchers("/dashboard/**").authenticated()
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
