@@ -15,7 +15,6 @@ import org.example.dat251project.models.Booking;
 import org.example.dat251project.models.Restaurant;
 import org.example.dat251project.models.Table;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -182,7 +181,7 @@ public class BookingSystem {
 
 
     /**
-     * Find available an available {@link Table table}/{@link Table tables} that can seat
+     * Find an available {@link Table table}/{@link Table tables} that can seat
      * the amount of {@link Integer numGuests} given the {@link LocalDate date} and {@link LocalTime time} of the
      * booking they want to have. Finding available tables is dependent on the different {@link TableSelectionAlgorithm algorithms}
      * which will find the most optimal one.
@@ -193,8 +192,32 @@ public class BookingSystem {
      * @return List of Table/Tables. If there are none available, it will return an empty list. Will also return empty list if {@link Integer numGuest} exceeds max group size
      */
     public List<Table> findAvailableTables(LocalDate date, LocalTime time, int numGuests) {
-        List<Table> nonAvailable = new ArrayList<>();
         Set<Table> occupiedTables = getOccupiedTables(date, time);
+        return getAvailableTables(occupiedTables, numGuests);
+    }
+
+    /**
+     * Find an available {@link Table table}/{@link Table tables} that can seat
+     * the amount of {@link Integer numGuests} given the {@link LocalDate date} and {@link LocalTime time} of the
+     * booking they want to have. Finding available tables is dependent on the different {@link TableSelectionAlgorithm algorithms}
+     * which will find the most optimal one, and it will include their existing table
+     *
+     * @param date of booking
+     * @param time of booking
+     * @param numGuests of booking
+     * @param id of booking
+     * @return List of Table/Tables. If there are none available, it will return an empty list. Will also return empty list if {@link Integer numGuest} exceeds max group size
+     */
+    public List<Table> findAvailableTablesForUpdate(LocalDate date, LocalTime time, int numGuests, UUID id) {
+        Set<Table> occupiedTables = getOccupiedTables(date, time);
+        // exclude their old table/tables to get actual available tables
+        List<Table> existingTables = bookingService.bookingRepo.findAllTablesByBookingId(id);
+        occupiedTables.removeIf(existingTables::contains);
+        return getAvailableTables(occupiedTables, numGuests);
+    }
+
+    private List<Table> getAvailableTables(Set<Table> occupiedTables, int numGuests){
+        List<Table> nonAvailable = new ArrayList<>();
         List<TableSelectionAlgorithm> strategies = List.of(
                 new SmallTableAlgorithm(),
                 new BigTableAlgorithm(),
@@ -242,7 +265,7 @@ public class BookingSystem {
 
     /**
      * Updates an existing booking
-     * @param booking
+     * @param booking - to be updated
      * @return updated booking or null if not valid
      */
     public Booking updateExistingBooking(BookingResponseDTO booking, UUID id){
@@ -251,41 +274,41 @@ public class BookingSystem {
         }
         Optional<Booking> existingBooking = bookingService.bookingRepo.findById(booking.getId());
         if (existingBooking.isPresent()){
-//            Booking oldBooking = existingBooking.get();
-//            Booking bookingToUpdate = existingBooking.get();
+            Booking bookingToUpdate = existingBooking.get();
 
             // Check whether the time and date are valid inputs
             if (!this.checkValidBookingTimeAndDate(booking.getTime(), booking.getDate())) {
                 return null;
             }
 
-            System.out.println(booking.getTime() + " " + booking.getDate().toString());
-
-            // remove old booking to see actual available tables (including their own table)
-            bookingService.bookingRepo.deleteById(id);
+            // Check that time is at least 2 hours before booking on the same day
+            LocalDate todayDate = LocalDate.now();
+            if (todayDate.equals(booking.getDate())){
+                LocalTime earliestTime = LocalTime.now().plusHours(restaurant.BOOKING_DURATION);
+                if (!booking.getTime().isAfter(earliestTime)){
+                    return null;
+                }
+            }
 
             // Check if there are available table for this update
-            List<Table> bookedTables = this.findAvailableTables(booking.getDate(), booking.getTime(), booking.getNumberGuest());
+            List<Table> bookedTables = this.findAvailableTablesForUpdate(booking.getDate(), booking.getTime(), booking.getNumberGuest(), booking.getId());
             if (!bookedTables.isEmpty()) {
-                Booking newBooking = new Booking(
-                        booking.getEmail(),
-                        booking.getPhoneNumber(),
-                        booking.getNumberGuest(),
-                        booking.getTime(),
-                        booking.getDate(),
-                        booking.getComment(),
-                        bookedTables
-                );
+                bookingToUpdate.setEmail(booking.getEmail());
+                bookingToUpdate.setPhoneNumber(booking.getPhoneNumber());
+                bookingToUpdate.setNumberGuest(booking.getNumberGuest());
+                bookingToUpdate.setTime(booking.getTime());
+                bookingToUpdate.setDate(booking.getDate());
+                bookingToUpdate.setComment(booking.getComment());
+                bookingToUpdate.setTables(bookedTables);
 
                 // send new confirmation email after successful update
                 try {
-                    emailService.createEmailBooking(newBooking);
-                    return bookingService.bookingRepo.save(newBooking);
+                    Booking updatedBooking = bookingService.bookingRepo.save(bookingToUpdate);
+                    emailService.createEmailBooking(updatedBooking);
+                    return updatedBooking;
                 } catch (MessagingException e) {
                     return null;
                 }
-            } else{
-                System.out.println("feil 2");
             }
         }
         return null;
