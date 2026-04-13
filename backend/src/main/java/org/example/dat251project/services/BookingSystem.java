@@ -251,30 +251,41 @@ public class BookingSystem {
         }
         Optional<Booking> existingBooking = bookingService.bookingRepo.findById(booking.getId());
         if (existingBooking.isPresent()){
-            Booking bookingToUpdate = existingBooking.get();
+//            Booking oldBooking = existingBooking.get();
+//            Booking bookingToUpdate = existingBooking.get();
 
             // Check whether the time and date are valid inputs
             if (!this.checkValidBookingTimeAndDate(booking.getTime(), booking.getDate())) {
                 return null;
             }
+
+            System.out.println(booking.getTime() + " " + booking.getDate().toString());
+
+            // remove old booking to see actual available tables (including their own table)
+            bookingService.bookingRepo.deleteById(id);
+
             // Check if there are available table for this update
             List<Table> bookedTables = this.findAvailableTables(booking.getDate(), booking.getTime(), booking.getNumberGuest());
             if (!bookedTables.isEmpty()) {
-                bookingToUpdate.setEmail(booking.getEmail());
-                bookingToUpdate.setPhoneNumber(booking.getPhoneNumber());
-                bookingToUpdate.setDate(booking.getDate());
-                bookingToUpdate.setTime(booking.getTime());
-                bookingToUpdate.setNumberGuest(booking.getNumberGuest());
-                bookingToUpdate.setComment(booking.getComment());
-                bookingToUpdate.setTables(bookedTables);
+                Booking newBooking = new Booking(
+                        booking.getEmail(),
+                        booking.getPhoneNumber(),
+                        booking.getNumberGuest(),
+                        booking.getTime(),
+                        booking.getDate(),
+                        booking.getComment(),
+                        bookedTables
+                );
 
                 // send new confirmation email after successful update
                 try {
-                    emailService.createEmailBooking(bookingToUpdate);
-                    return bookingService.bookingRepo.save(bookingToUpdate);
+                    emailService.createEmailBooking(newBooking);
+                    return bookingService.bookingRepo.save(newBooking);
                 } catch (MessagingException e) {
                     return null;
                 }
+            } else{
+                System.out.println("feil 2");
             }
         }
         return null;

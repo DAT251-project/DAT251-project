@@ -1,19 +1,23 @@
 import {SubmitHandler, useForm} from "react-hook-form";
-import {bookingSchema, BookingSchemaType, TimeSlotExtendedType} from "@/app/(main)/booking/FormTypes";
+import {
+    BookingRequestType,
+    bookingSchema,
+    BookingSchemaType,
+    TimeSlotExtendedType
+} from "@/app/(main)/booking/FormTypes";
 import {zodResolver} from "@hookform/resolvers/zod";
-import useBookingUpdate from "@/app/hooks/useBookingUpdate";
 import {CountryCode, getCountries} from "libphonenumber-js";
 import React, {useEffect} from "react";
-import Image from "next/image";
-import {ExclamationTriangleIcon} from "@heroicons/react/16/solid";
 import {MAX_NUMBER_GUEST} from "@/app/(main)/booking/(formParts)/GuestsDetailsForm";
 import {dateToString} from "@/app/utils/utils";
 import {useTimeSlots} from "@/app/hooks/useTimeSlots";
 import {ArrowLeftIcon} from "@heroicons/react/24/outline";
+import {ConfirmationSections} from "@/app/(main)/booking/[id]/page";
+import {UseMutationResult} from "@tanstack/react-query";
 
-export default function BookingUpdate({data, handleUpdate}: {data:BookingSchemaType | undefined, handleUpdate: (value:boolean) => void}){
+export default function BookingUpdate({data, updateHook, handleUpdate}: {data:BookingSchemaType | undefined, updateHook:UseMutationResult<any, Error, BookingRequestType>, handleUpdate: (value: ConfirmationSections) => void}){
     const {
-        register, handleSubmit, watch, reset, formState: { errors },
+        register, handleSubmit, watch, setValue, formState: { errors },
     } = useForm<BookingSchemaType>({
         resolver: zodResolver(bookingSchema),
         defaultValues:{
@@ -22,15 +26,12 @@ export default function BookingUpdate({data, handleUpdate}: {data:BookingSchemaT
         },
         mode: "onSubmit"
     })
-    const chosenTimeSlot: string = watch("time");
-    const bookingUpdate = useBookingUpdate();
-
     const onSubmit: SubmitHandler<BookingSchemaType> = async (data) => {
         // remove country code field because it's not part of Booking model
         const {countryCode, ...validRequestData} = data;
         try{
-            await bookingUpdate.mutateAsync(validRequestData);
-            handleUpdate(false)
+            await updateHook.mutateAsync(validRequestData);
+            handleUpdate("CONFIRM")
         } catch (error){
             console.log(error);
         }
@@ -44,36 +45,24 @@ export default function BookingUpdate({data, handleUpdate}: {data:BookingSchemaT
     today.setMonth(today.getMonth() + 2)
     const maxDate: string = dateToString(today)
 
-    const TIMESLOT_EXTENDED: TimeSlotExtendedType[] = useTimeSlots(watch("numberGuest"), watch("date"))
+    const chosenTimeSlot: string = watch("time");
+    const numberGuest = watch("numberGuest")
+    const date = watch("date")
+
+    const TIMESLOT_EXTENDED: TimeSlotExtendedType[]  = useTimeSlots(numberGuest, date)
+
+    const handleBack = () => {
+        updateHook.reset();
+        handleUpdate("CONFIRM")
+    }
 
     useEffect(() => {
-        // to properly set the default values
-        if (data?.time && TIMESLOT_EXTENDED.length > 0) {
-            reset({
-                ...data,
-                countryCode: "NO",
-            })
-        }
-    }, [data?.id, TIMESLOT_EXTENDED.length, reset])
+        if (!TIMESLOT_EXTENDED.length) return
 
-    return <>
-        {/*Loading animation shown while submitting form*/}
-        <div aria-live={"polite"}>
-            {bookingUpdate.isPending && <Image src={"/loading.gif"}
-                                 alt={"loading animation while waiting for submission verification"}
-                                 width={500} height={240}
-                                 unoptimized={true}/>}
-        </div>
-        {/*Error message if submission fails*/}
-        <div aria-live={"polite"}>
-            {bookingUpdate.isError &&
-                <div className={"flex flex-col md:flex-row items-center gap-2 text-center md:text-left bg-red-200 border-2 border-red-600 p-3"}>
-                    <ExclamationTriangleIcon aria-hidden={true} className={"size-13 sm:size-10"}/>
-                    <p>Det er ingen ledige bord på dette tidspunktet</p>
-                </div>
-            }
-        </div>
-        {!bookingUpdate.isPending && <form onSubmit={handleSubmit(onSubmit)}>
+        setValue("time", chosenTimeSlot)
+    }, [TIMESLOT_EXTENDED])
+
+    return <form onSubmit={handleSubmit(onSubmit)}>
             <section className={"flex flex-col gap-4"}>
                 <div className={"flex flex-col gap-3"}>
                     <div className={"flex gap-3"}>
@@ -139,7 +128,7 @@ export default function BookingUpdate({data, handleUpdate}: {data:BookingSchemaT
                 <div>
                     <button type={"button"}
                             aria-label={"Go back to choosing date of booking"}
-                            onClick={() => handleUpdate(false)}
+                            onClick={handleBack}
                             className={"p-2 border-2 rounded-full w-fit scale-90 hover:scale-100 transition-all"}>
                         <ArrowLeftIcon className={"w-8 h-8"} aria-hidden={true}/>
                     </button>
@@ -151,6 +140,5 @@ export default function BookingUpdate({data, handleUpdate}: {data:BookingSchemaT
                     </div>
                 </div>
             </section>
-        </form>}
-    </>
+        </form>
 }

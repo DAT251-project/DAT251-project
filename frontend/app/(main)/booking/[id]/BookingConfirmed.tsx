@@ -4,7 +4,7 @@ import {BookingSchemaType} from "@/app/(main)/booking/FormTypes";
 import BookingUpdate from "@/app/(main)/booking/[id]/BookingUpdate";
 import {PencilSquareIcon} from "@heroicons/react/16/solid";
 
-export default function BookingConfirmed({data, isError, id, handleBookingDelete} : {data:BookingSchemaType | undefined, isError:boolean, id:string, handleBookingDelete: () => void}) {
+export default function BookingConfirmed({data} : {data:BookingSchemaType | undefined}) {
     const timeStart:string = data?.time.slice(0,-3) || "";
     const maxHoursTime:number = 2
     // Add max hours time based on start time in correct format (hh:mm)
@@ -15,11 +15,7 @@ export default function BookingConfirmed({data, isError, id, handleBookingDelete
     const [update, setUpdate] = useState(false);
 
     return (<>
-        {/*Error message if finding booking fails*/}
-        <div aria-live={"polite"}>
-            {isError && <h1 className={"md:text-xl text-center"}>Kan ikke finne booking bekreftelse for booking med <span className={"font-bold"}>ID:{id}</span></h1>}
-        </div>
-        {(data && !update && !isError) &&
+        {(data && !update) &&
             // Booking confirmed content
             <>
                 <h1 className={"text-2xl uppercase"}>Booking bekreftet</h1>
@@ -31,18 +27,7 @@ export default function BookingConfirmed({data, isError, id, handleBookingDelete
                     <p>Telefonnummer: <span className={"font-bold"}>{data.phoneNumber}</span></p>
                     <p>Kommentar: <span>{data.comment}</span></p>
                 </div>
-                <section className={"flex flex-col md:flex-row gap-3"}>
-                    <button className={"border-2 border-red-800 bg-red-800 text-white py-2 px-3 rounded-md flex gap-2 transition-all hover:bg-custom-eggwhite hover:text-custom-red"}
-                            onClick={handleBookingDelete}
-                    >
-                        <TrashIcon className={"size-6"} aria-hidden={true}/>Slett reservasjon</button>
-                    <button className={"border-2 border-custom-gray bg-custom-gray text-white py-2 px-3 rounded-md flex gap-2 transition-all hover:bg-custom-eggwhite hover:text-custom-gray"}
-                            onClick={() => setUpdate(true)}
-                    >
-                        <PencilSquareIcon className={"size-6"} aria-hidden={true}/>Endre reservasjon</button>
-                </section>
             </> }
-            {(data && update && !isError) && <BookingUpdate data={data} handleUpdate={setUpdate}/> }
     </>
     )
 }

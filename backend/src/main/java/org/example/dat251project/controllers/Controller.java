@@ -114,11 +114,21 @@ public class Controller {
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
     @ApiResponse(responseCode = "400")
     @PutMapping("booking/{id}")
-    public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingResponseDTO booking, @PathVariable UUID id){
+    public ResponseEntity<BookingResponseDTO> updateBooking(@Valid @RequestBody BookingResponseDTO booking, @PathVariable UUID id){
         Booking updatedBooking = bookingSystem.updateExistingBooking(booking, id);
 
         if (updatedBooking != null){
-            return ResponseEntity.ok().build();
+            BookingResponseDTO bookingResponseDTO = BookingResponseDTO.builder()
+                    .id(updatedBooking.getId())
+                    .email(updatedBooking.getEmail())
+                    .phoneNumber(updatedBooking.getPhoneNumber())
+                    .numberGuest(updatedBooking.getNumberGuest())
+                    .time(updatedBooking.getTime())
+                    .date(updatedBooking.getDate())
+                    .comment(updatedBooking.getComment())
+                    .build();
+            URI location = URI.create("/booking/" + booking.getId());
+            return ResponseEntity.created(location).body(bookingResponseDTO);
         }
         return ResponseEntity.badRequest().build();
     }

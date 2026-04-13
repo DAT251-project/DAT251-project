@@ -11,13 +11,14 @@ export default function useBookingSubmit() {
     const router = useRouter();
     const [isRedirecting, setIsRedirecting] = useState(false)
 
-    const {mutate, isError, isPending, isSuccess} = useMutation({
-        mutationFn: (formData: BookingRequestType) => {
-            return axios.post("http://localhost:8080/booking", formData)
+    const {mutate, isError, isPending} = useMutation({
+        mutationFn: async (formData: BookingRequestType) => {
+            const response = await axios.post("http://localhost:8080/booking", formData)
+            return response.data;
         },
         onSuccess: (data) => {
             setIsRedirecting(true)
-            router.push(`/booking/${data.data.id}`);
+            router.push(`/booking/${data.id}`);
         },
         onError: () => {
             setIsRedirecting(false)

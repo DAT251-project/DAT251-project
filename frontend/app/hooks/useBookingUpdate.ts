@@ -12,12 +12,8 @@ export default function useBookingUpdate() {
 
     return useMutation({
         mutationFn: async (formData: BookingRequestType) => {
-            try{
-                const res = await axios.put("http://localhost:8080/booking/" + formData.id, formData)
-                return res.data;
-            } catch (error){
-                throw error;
-            }
+            const response = await axios.put("http://localhost:8080/booking/" + formData.id, formData)
+            return response.data
         },
         onSuccess: (data) => {
             queryClient.setQueryData(['specificBooking', data.id], data)
