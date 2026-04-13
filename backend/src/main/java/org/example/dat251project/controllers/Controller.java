@@ -15,6 +15,17 @@ import org.example.dat251project.models.Table;
 import org.example.dat251project.services.BookingSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -169,4 +180,46 @@ public class Controller {
         return ResponseEntity.ok().body(timeSlotDTO);
     }
 
+
+@PostMapping("/admin/menu/upload")
+@CrossOrigin(origins = "http://localhost:3000")
+public ResponseEntity<Void> uploadMenuPdf(@RequestParam("file") MultipartFile file) {
+    try {
+        java.nio.file.Path path = Paths.get(
+                "src/main/resources/static/menu/menu-NO-2025.pdf"
+        );
+
+        Files.copy(
+                file.getInputStream(),
+                path,
+                StandardCopyOption.REPLACE_EXISTING
+        );
+
+        return ResponseEntity.ok().build();
+
+    } catch (IOException e) {
+        return ResponseEntity.status(500).build();
+    }
+}
+
+@PostMapping("/admin/takeaway/upload")
+@CrossOrigin(origins = "http://localhost:3000")
+public ResponseEntity<String> uploadTakeawayPdf(@RequestParam("file") MultipartFile file) {
+    try {
+        java.nio.file.Path directory = Paths.get("src/main/resources/static/menu");
+        Files.createDirectories(directory);
+
+        java.nio.file.Path filePath = directory.resolve("takeaway-2025.pdf");
+
+        Files.copy(
+                file.getInputStream(),
+                filePath,
+                StandardCopyOption.REPLACE_EXISTING
+        );
+
+        return ResponseEntity.ok("Takeaway PDF updated");
+    } catch (IOException e) {
+        return ResponseEntity.status(500).body(e.getMessage());
+    }
+}
 }
