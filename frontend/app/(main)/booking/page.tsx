@@ -30,7 +30,7 @@ export default function Page () {
         mode: "onSubmit"
     })
     const [schemaSection, setSchemaSection] = useState<SchemaSections>("GUESTS");
-    const {mutate, isError, isPending} = useBookingSubmit();
+    const {mutate, isError, isPending, isRedirecting} = useBookingSubmit();
 
     const onSubmit: SubmitHandler<BookingSchemaType> = (data) => {
         // remove country code field because it's not part of Booking model
@@ -57,7 +57,7 @@ export default function Page () {
                    </div>
                }
            </div>
-           {!isPending &&
+           {(!isPending && !isRedirecting) &&
                <form onSubmit={handleSubmit(onSubmit)} className={"max-w-100 w-full"}>
                {schemaSection === "GUESTS" &&
                    <GuestsDetailsForm control={control}

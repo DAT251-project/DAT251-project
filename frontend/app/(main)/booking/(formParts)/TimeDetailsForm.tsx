@@ -27,6 +27,8 @@ export default function TimeDetailsForm({control, errors, watch, setSchemaSelect
 
     const timeSlotsExtended = useTimeSlots(chosenNumberGuest, chosenFullDate);
 
+    console.log(timeSlotsExtended);
+
     const handleTime = (timeSlot: string) => {
         field.onChange(timeSlot);
         setSchemaSelection("CONTACT")

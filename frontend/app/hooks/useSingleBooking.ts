@@ -8,7 +8,7 @@ import {BookingSchemaType} from "@/app/(main)/booking/FormTypes";
  */
 export default function useSingleBooking(id:string){
     const {data, isError, isPending} = useQuery({
-        queryKey: [`booking`],
+        queryKey: [`specificBooking`, id],
         queryFn: async () => {
             const response = await axios.get<BookingSchemaType>(`http://localhost:8080/booking/${id}`);
             return response.data;

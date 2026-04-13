@@ -1,0 +1,27 @@
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {BookingRequestType} from "@/app/(main)/booking/FormTypes";
+import axios from "axios";
+import {useRouter} from "next/navigation";
+
+/**
+ * Custom hook to update existing booking
+ */
+export default function useBookingUpdate() {
+    const queryClient = useQueryClient();
+    const router = useRouter();
+
+    return useMutation({
+        mutationFn: async (formData: BookingRequestType) => {
+            try{
+                const res = await axios.put("http://localhost:8080/booking/" + formData.id, formData)
+                return res.data;
+            } catch (error){
+                throw error;
+            }
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData(['specificBooking', data.id], data)
+            router.push(`/booking/${data.id}`);
+        },
+    })
+}

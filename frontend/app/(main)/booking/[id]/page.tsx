@@ -27,7 +27,7 @@ export default function Page(){
     }
 
     return (<section className={"bg-custom-eggwhite h-full"}>
-        <Container style={"flex flex-col items-center px-5 py-20 2xl:py-30 gap-9"}>
+        <Container style={"flex flex-col items-center px-5 pt-5 pb-20 2xl:pb-30 gap-4"}>
             {/*Loading animation shown while fetching booking*/}
             <div aria-live={"polite"}>
                 {isPending && <Image src={"/loading.gif"}
@@ -37,7 +37,7 @@ export default function Page(){
             </div>
             {!isDeleted ?
                 <BookingConfirmed data={data} isError={isError} id={id} handleBookingDelete={handleBookingDelete}/> :
-                <BookingDeleted email={data.email} isError={deleteHook.isError}/>
+                <BookingDeleted email={data?.email || ""} isError={deleteHook.isError}/>
             }
         </Container>
     </section>)

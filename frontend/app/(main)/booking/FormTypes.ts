@@ -16,10 +16,10 @@ export const bookingSchema = z.object({
     ),
     email: z.email({message: "Ugyldig email"}),
     countryCode: z.string(),
-    phoneNumber: z.string(),
+    phoneNumber: z.number(),
     comment: z.string().max(255, "Kommentar kan ikke vÃ¦re mer enn 255 karakterer").optional()
 }).refine(
-    (data) => isValidPhoneNumber(data.phoneNumber, data.countryCode as CountryCode), {
+    (data) => isValidPhoneNumber(data.phoneNumber.toString(), data.countryCode as CountryCode), {
         message: "Ugylig telefonnummer for valgt land",
         path: ["phoneNumber"]
     }
@@ -33,7 +33,7 @@ export type BookingRequestType = {
     time: string,
     date: string,
     email: string,
-    phoneNumber: string,
+    phoneNumber: number,
     comment?: string,
 }
 
