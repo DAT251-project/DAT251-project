@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,11 +30,6 @@ public class Controller {
     @Autowired
     BookingSystem bookingSystem;
 
-
-    @GetMapping("menu")
-    public ResponseEntity<URL> menu() {
-        return null;
-    }
 
     @Operation(summary = "Create a new Booking")
     @ApiResponse(responseCode = "201", useReturnTypeSchema = true)
@@ -90,6 +85,66 @@ public class Controller {
                 .comment(booking.getComment())
                 .build();
         return ResponseEntity.ok().body(bookingResponseDTO);
+    }
+
+    @Operation(summary = "Get today's bookings")
+    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @GetMapping("booking/today")
+    public ResponseEntity<List<BookingResponseDTO>> getTodayBookings() {
+        List<Booking> bookings = bookingSystem.getAllBookingsByDate(LocalDate.now());
+
+        List<BookingResponseDTO> bookingResponseDTOs = bookings.stream()
+                .map(booking -> BookingResponseDTO.builder()
+                        .id(booking.getId())
+                        .email(booking.getEmail())
+                        .phoneNumber(booking.getPhoneNumber())
+                        .numberGuest(booking.getNumberGuest())
+                        .time(booking.getTime())
+                        .date(booking.getDate())
+                        .comment(booking.getComment())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(bookingResponseDTOs);
+    }
+
+    @Operation(summary = "Get all bookings")
+    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @GetMapping("booking/history")
+    public ResponseEntity<List<BookingResponseDTO>> getBookingHistory() {
+        List<Booking> bookings = bookingSystem.getAllBookings();
+
+        List<BookingResponseDTO> bookingResponseDTOs = bookings.stream()
+                .map(booking -> BookingResponseDTO.builder()
+                        .id(booking.getId())
+                        .email(booking.getEmail())
+                        .phoneNumber(booking.getPhoneNumber())
+                        .numberGuest(booking.getNumberGuest())
+                        .time(booking.getTime())
+                        .date(booking.getDate())
+                        .comment(booking.getComment())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(bookingResponseDTOs);
+    }
+
+    @Operation(summary = "Get all bookings on the given date")
+    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @GetMapping("booking/history/{date}")
+    public ResponseEntity<List<BookingResponseDTO>> getBookingHistoryByDate(@PathVariable LocalDate date) {
+        List<Booking> bookings = bookingSystem.getAllBookingsByDate(date);
+
+        List<BookingResponseDTO> bookingResponseDTOs = bookings.stream()
+                .map(booking -> BookingResponseDTO.builder()
+                        .id(booking.getId())
+                        .email(booking.getEmail())
+                        .phoneNumber(booking.getPhoneNumber())
+                        .numberGuest(booking.getNumberGuest())
+                        .time(booking.getTime())
+                        .date(booking.getDate())
+                        .comment(booking.getComment())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(bookingResponseDTOs);
     }
 
     @Operation(summary = "Delete a specific booking by their booking id")

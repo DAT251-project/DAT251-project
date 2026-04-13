@@ -306,6 +306,29 @@ public class BookingSystem {
     }
 
     /**
+     * Get all {@link Booking bookings}
+     *
+     * @return List of {@link Booking bookings} sorted by their time descending
+     */
+    public List<Booking> getAllBookings() {
+        ArrayList<Booking> bookings = new ArrayList<>(bookingService.findAllBookings());
+        bookings.sort(Comparator.comparing(Booking::getTime).reversed());
+        return bookings;
+    }
+
+    /**
+     * Get all {@link Booking bookings} on the given date
+     *
+     * @param date
+     * @return List of {@link Booking bookings} sorted by their time descending
+     */
+    public List<Booking> getAllBookingsByDate(LocalDate date) {
+        ArrayList<Booking> bookings = new ArrayList<>(bookingService.findAllBookingsByDate(date));
+        bookings.sort(Comparator.comparing(Booking::getTime).reversed());
+        return bookings;
+    }
+
+    /**
      * Convert Booking to BookingDTO
      *
      * @param list List with Booking
