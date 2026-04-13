@@ -16,8 +16,8 @@ export const bookingSchema = z.object({
     ),
     email: z.email({message: "Ugyldig email"}),
     countryCode: z.string(),
-    phoneNumber: z.number(),
-    comment: z.string().max(255, "Kommentar kan ikke vÃ¦re mer enn 255 karakterer").optional()
+    phoneNumber: z.number({message: "Ugylig telefonnummer for valgt land"}),
+    comment: z.string().max(255, "Kommentar kan ikke være mer enn 255 karakterer").optional()
 }).refine(
     (data) => isValidPhoneNumber(data.phoneNumber.toString(), data.countryCode as CountryCode), {
         message: "Ugylig telefonnummer for valgt land",

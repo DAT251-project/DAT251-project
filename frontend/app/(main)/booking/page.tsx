@@ -53,7 +53,7 @@ export default function Page () {
                {isError &&
                    <div className={"flex flex-col md:flex-row items-center gap-2 text-center md:text-left bg-red-200 border-2 border-red-600 p-3"}>
                        <ExclamationTriangleIcon aria-hidden={true} className={"size-13 sm:size-10"}/>
-                       <p>Det oppstod en feil ved innsending av skjemaet. Vennligst prÃ¸v igjen senere eller ring oss pÃ¥ telefon.</p>
+                       <p>Det oppstod en feil ved innsending av skjemaet. Vennligst prøv igjen senere eller ring oss på telefon.</p>
                    </div>
                }
            </div>
