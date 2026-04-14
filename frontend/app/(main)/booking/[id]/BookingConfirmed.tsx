@@ -12,17 +12,6 @@ export default function BookingConfirmed({data} : {data:BookingSchemaType | unde
     const hours:number = Number(data?.time.slice(0, 2)) + maxHoursTime
     const minutes:string = data?.time.slice(2,5) || ""
     const timeEnd:string = hours.toString() + minutes || "";
-    // const callingCode: CountryCallingCode = getCountryCallingCode(data?.countryCode as CountryCode)
-    // const phoneNumber: number | undefined = data?.phoneNumber;
-    // let parsedPhoneNumber:string = "";
-    //
-    // if (phoneNumber !== undefined){
-    //  if (phoneNumber.toString().startsWith(callingCode)){
-    //      parsedPhoneNumber = "+" + phoneNumber.toString()
-    //  } else {
-    //      parsedPhoneNumber = phoneNumber.toString()
-    //  }
-    // }
 
     return (<>
         {data &&
