@@ -27,35 +27,43 @@ export default function DashboardBookingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const bookingsPerPage = 10;
   
   const dateInputReference = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    async function fetchBookings() {
-      try {
-        const url = selectedDate
-          ? `http://localhost:8080/booking/history/${selectedDate}`
-          : "http://localhost:8080/booking/history";
+  setCurrentPage(1);
+}, [searchQuery, selectedDate]);
 
-        const response = await fetch(url);
+useEffect(() => {
+  async function fetchBookings() {
+    try {
+      const url = selectedDate
+        ? `http://localhost:8080/booking/history/${selectedDate}`
+        : "http://localhost:8080/booking/history";
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch bookings");
-        }
+      const response = await fetch(url);
 
-        const data: Booking[] = await response.json();
-        setBookings(data);
-      } catch (error) {
-        setErrorMessage("Failed to fetch bookings");
-        console.error(error);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to fetch bookings");
       }
-    }
 
-    setIsLoading(true);
-    fetchBookings();
-  }, [selectedDate]);
+      const data: Booking[] = await response.json();
+      setBookings(data);
+    } catch (error) {
+      setErrorMessage("Failed to fetch bookings");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  setIsLoading(true);
+  fetchBookings();
+}, [selectedDate]);
+
+
 
   function handleDateButtonClick() {
     dateInputReference.current?.showPicker?.();
@@ -92,10 +100,18 @@ const filteredAndSortedBookings = useMemo(() => {
       `${secondBooking.date}T${secondBooking.time}`
     );
 
-    return secondDateTime.getTime() - firstDateTime.getTime();
+    return firstDateTime.getTime() - secondDateTime.getTime();
   });
 }, [bookings, searchQuery]);
 
+    const totalPages = Math.ceil(
+    filteredAndSortedBookings.length / bookingsPerPage
+  );
+
+  const paginatedBookings = filteredAndSortedBookings.slice(
+    (currentPage - 1) * bookingsPerPage,
+    currentPage * bookingsPerPage
+  );
   const dateButtonText = selectedDate ? formatDate(selectedDate) : "Dato";
 
   return (
@@ -112,7 +128,7 @@ const filteredAndSortedBookings = useMemo(() => {
                 type="button"
                 onClick={handleDateButtonClick}
                 className="font-title flex w-full items-center justify-center gap-3 rounded-2xl bg-[#c9a46d] px-4 py-3 text-sm font-medium text-black transition hover:opacity-90 sm:w-auto sm:min-w-[150px]">
-                <span>Dato</span>
+                <span>{dateButtonText}</span>
                 <CalendarIcon className="h-5 w-5 shrink-0"/>
               </button>
 
@@ -168,7 +184,7 @@ const filteredAndSortedBookings = useMemo(() => {
               </thead>
 
               <tbody>
-                {filteredAndSortedBookings.map((booking) => (
+                {paginatedBookings.map((booking) => (
                   <tr key={booking.id}
                     className="border-b border-neutral-200 last:border-none text-sm">
                     <td className="px-4 py-6 sm:px-6 break-words">{booking.email}</td>
@@ -216,15 +232,28 @@ const filteredAndSortedBookings = useMemo(() => {
         )}
 
         <div className="mt-5 flex flex-col gap-4 text-sm text-neutral-700 sm:flex-row sm:items-center sm:justify-between">
-          <p>Viser {filteredAndSortedBookings.length} resultater</p>
+        <p>
+          Side {currentPage} av {Math.max(totalPages, 1)} -{" "}
+          {filteredAndSortedBookings.length} resultater
+        </p>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button className="tracking-wider font-title flex items-center gap-2 rounded-full border border-neutral-500 px-5 py-2 text-neutral-500 transition hover:bg-neutral-100">
+            <button
+              onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
+              disabled={currentPage === 1}
+              className="tracking-wider font-title flex items-center gap-2 rounded-full border border-neutral-500 px-5 py-2 text-neutral-500 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-40"
+            >
               <ChevronLeftIcon className="h-4 w-4" />
               <span>Forrige</span>
             </button>
 
-            <button className="tracking-wider font-title flex items-center gap-2 rounded-full border border-neutral-500 px-5 py-2 text-neutral-700 transition hover:bg-neutral-100">
+            <button
+              onClick={() =>
+                setCurrentPage((page) => Math.min(page + 1, totalPages))
+              }
+              disabled={currentPage === totalPages || totalPages === 0}
+              className="tracking-wider font-title flex items-center gap-2 rounded-full border border-neutral-500 px-5 py-2 text-neutral-700 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-40"
+            >
               <span>Neste</span>
               <ChevronRightIcon className="h-4 w-4" />
             </button>
