@@ -25,7 +25,6 @@ export default function Page() {
     const {
         register,
         handleSubmit,
-        getValues,
         formState: {errors}
     } = useForm<LoginType>({
         resolver: zodResolver(loginSchema),
@@ -38,15 +37,12 @@ export default function Page() {
             return apiClient.post("http://localhost:8080/users/login", userData);
         },
         onSuccess: (response) => {
-            console.log(response);
             router.push("/dashboard")
         }
     });
     const onSubmit: SubmitHandler<LoginType> = (data) => {
-        console.log(data);
         mutation.mutate(data)
     };
-    console.log(getValues());
     return (
         <div style={styles.container}>
             <div style={styles.card}>
