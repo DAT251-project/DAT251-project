@@ -9,6 +9,7 @@ guests to tables were based on the restaurant layout and booking constraints.
 ## Installation and Usage
 Clone github repo
 To run application you have to first run the backend:  
+
 **On MAC**  
 ```
 gradle bootrun
