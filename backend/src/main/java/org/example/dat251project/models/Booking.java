@@ -29,7 +29,9 @@ public class Booking {
     @Email
     private String email;
     @NotNull
-    private Integer phoneNumber;
+    private String phoneNumber;
+    @NotNull
+    private String countryCode;
     @NotNull
     @Min(1)
     private int numberGuest;
@@ -49,9 +51,10 @@ public class Booking {
     @JoinTable(name = "booking_tables")
     private List<Table> tables;
 
-    public Booking(String email, Integer phoneNumber, int numberGuest, LocalTime time, LocalDate date, String comment, List<Table> tables) {
+    public Booking(String email, String phoneNumber, String countryCode, int numberGuest, LocalTime time, LocalDate date, String comment, List<Table> tables) {
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.countryCode = countryCode;
         this.numberGuest = numberGuest;
         this.time = time;
         this.date = date;
