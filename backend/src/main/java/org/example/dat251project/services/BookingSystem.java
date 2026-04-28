@@ -128,7 +128,6 @@ public class BookingSystem {
                 availabilityList.add(TimeSlotDTO.builder().time(timeslot).available(checkAvailability(date, timeslot, numGuests)).pastTime(false).build());
             }
         }
-
         return availabilityList;
     }
 
