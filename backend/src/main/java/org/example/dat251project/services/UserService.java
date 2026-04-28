@@ -22,7 +22,6 @@ public class UserService {
     private AuthenticationManager authManager;
     @Autowired
     private JWTService jwtService;
-    // hello
     /**
      * Create a valid Cookie used for authentication and authorization
      *
