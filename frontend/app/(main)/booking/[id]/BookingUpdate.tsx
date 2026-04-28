@@ -37,7 +37,6 @@ export default function BookingUpdate({data, updateHook, handleUpdate}: {data:Bo
     const NUMBER_GUESTS_LIST: number[] = Array.from({length: MAX_NUMBER_GUEST}, (_, index) => index + 1);
     const today = new Date();
     const todaysDate:string = dateToString(today)
-    today.setDate(1) // to avoid overflow which skips a month
     today.setMonth(today.getMonth() + 2)
     const maxDate: string = dateToString(today)
 
